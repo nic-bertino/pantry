@@ -78,7 +78,15 @@
 		"am": "AM",
 		"pm": "PM",
 		"locationsOpen": "{count} open",
-		"seeRequirements": "See Requirements"
+		"seeRequirements": "See Requirements",
+		"setLocation": "Set location",
+		"nearYou": "Near you",
+		"nearZip": "Near {zip}",
+		"useMyLocation": "Use my location",
+		"useMyLocationDesc": "Get distances to nearby distributions",
+		"zipCode": "ZIP code",
+		"update": "Update",
+		"invalidZip": "Enter a valid ZIP code"
 	},
 	"es": {
 		"appTitle": "Encuentra Comida Ahora",
@@ -159,6 +167,14 @@
 		"am": "AM",
 		"pm": "PM",
 		"locationsOpen": "{count} abiertos",
-		"seeRequirements": "Ver Requisitos"
+		"seeRequirements": "Ver Requisitos",
+		"setLocation": "Establecer ubicación",
+		"nearYou": "Cerca de ti",
+		"nearZip": "Cerca de {zip}",
+		"useMyLocation": "Usar mi ubicación",
+		"useMyLocationDesc": "Ver distancias a distribuciones cercanas",
+		"zipCode": "Código postal",
+		"update": "Actualizar",
+		"invalidZip": "Ingresa un código postal válido"
 	}
 }

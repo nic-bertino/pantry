@@ -11,11 +11,15 @@ interface Coordinates {
 	lng: number;
 }
 
+type LocationSource = "browser" | "zip" | null;
+
 interface GeolocationState {
 	coordinates: Coordinates | null;
 	error: string | null;
 	isLoading: boolean;
 	permissionState: "prompt" | "granted" | "denied" | "unavailable";
+	source: LocationSource;
+	zipCode: string | null;
 }
 
 export function useGeolocation() {
@@ -24,6 +28,8 @@ export function useGeolocation() {
 		error: null,
 		isLoading: false,
 		permissionState: USE_TEST_COORDS ? "granted" : "prompt",
+		source: USE_TEST_COORDS ? "browser" : null,
+		zipCode: null,
 	});
 
 	const requestPosition = useCallback(() => {
@@ -53,6 +59,8 @@ export function useGeolocation() {
 					error: null,
 					isLoading: false,
 					permissionState: "granted",
+					source: "browser",
+					zipCode: null,
 				});
 			},
 			(error) => {
@@ -120,12 +128,28 @@ export function useGeolocation() {
 		setState((prev) => ({
 			...prev,
 			coordinates: null,
+			source: null,
+			zipCode: null,
 		}));
 	}, []);
+
+	const setZipLocation = useCallback(
+		(zip: string, coordinates: Coordinates) => {
+			setState((prev) => ({
+				...prev,
+				coordinates,
+				error: null,
+				source: "zip",
+				zipCode: zip,
+			}));
+		},
+		[],
+	);
 
 	return {
 		...state,
 		requestPermission: requestPosition,
 		clearLocation,
+		setZipLocation,
 	};
 }

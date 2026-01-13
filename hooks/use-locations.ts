@@ -152,6 +152,7 @@ export function useLocations({ filter, userCoordinates }: UseLocationsOptions) {
 
 	return {
 		locations: sortedLocations,
+		allLocations: displayLocations,
 		counts,
 		total: displayLocations.length,
 	};
