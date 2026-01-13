@@ -49,9 +49,16 @@ function calculateDistance(
 export function useLocations({ filter, userCoordinates }: UseLocationsOptions) {
 	const now = useMemo(() => new Date(), []);
 
+	// Debug: log when coordinates change
+	console.log("[Locations] userCoordinates:", userCoordinates);
+
 	const displayLocations = useMemo(() => {
 		// Filter out hidden locations
 		const visibleLocations = locations.filter((loc) => !loc.hidden);
+
+		// Debug: check if locations have coordinates
+		const withCoords = visibleLocations.filter((loc) => loc.coordinates);
+		console.log("[Locations] With coordinates:", withCoords.length, "/", visibleLocations.length);
 
 		// Calculate availability and add to each location
 		const withAvailability: DisplayLocation[] = visibleLocations.map((loc) => {
@@ -74,6 +81,12 @@ export function useLocations({ filter, userCoordinates }: UseLocationsOptions) {
 				distance,
 			};
 		});
+
+		// Debug: log first location with distance
+		const firstWithDist = withAvailability.find((loc) => loc.distance !== undefined);
+		if (firstWithDist) {
+			console.log("[Locations] Sample distance:", firstWithDist.name.en, firstWithDist.distance?.toFixed(1), "mi");
+		}
 
 		return withAvailability;
 	}, [now, userCoordinates]);

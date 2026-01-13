@@ -2,6 +2,10 @@
 
 import { useCallback, useEffect, useState } from "react";
 
+// Dev: set to true to use test coordinates (downtown San Diego)
+const USE_TEST_COORDS = false;
+const TEST_COORDS = { lat: 32.7157, lng: -117.1611 };
+
 interface Coordinates {
 	lat: number;
 	lng: number;
@@ -16,10 +20,10 @@ interface GeolocationState {
 
 export function useGeolocation() {
 	const [state, setState] = useState<GeolocationState>({
-		coordinates: null,
+		coordinates: USE_TEST_COORDS ? TEST_COORDS : null,
 		error: null,
 		isLoading: false,
-		permissionState: "prompt",
+		permissionState: USE_TEST_COORDS ? "granted" : "prompt",
 	});
 
 	const requestPosition = useCallback(() => {
