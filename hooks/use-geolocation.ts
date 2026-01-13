@@ -36,6 +36,11 @@ export function useGeolocation() {
 
 		navigator.geolocation.getCurrentPosition(
 			(position) => {
+				console.log(
+					"[Geo] Success:",
+					position.coords.latitude,
+					position.coords.longitude,
+				);
 				setState({
 					coordinates: {
 						lat: position.coords.latitude,
@@ -47,19 +52,22 @@ export function useGeolocation() {
 				});
 			},
 			(error) => {
+				console.log("[Geo] Error:", error.code, error.message);
 				let errorMessage = "Could not get your location";
-				let permissionState: "prompt" | "granted" | "denied" = "prompt";
+				let permissionState: GeolocationState["permissionState"] = "prompt";
 
 				switch (error.code) {
-					case error.PERMISSION_DENIED:
+					case 1: // PERMISSION_DENIED
 						errorMessage = "Location permission denied";
 						permissionState = "denied";
 						break;
-					case error.POSITION_UNAVAILABLE:
-						errorMessage = "Location unavailable";
+					case 2: // POSITION_UNAVAILABLE
+						errorMessage = "Location unavailable - try again";
+						permissionState = "prompt"; // Allow retry
 						break;
-					case error.TIMEOUT:
+					case 3: // TIMEOUT
 						errorMessage = "Location request timed out";
+						permissionState = "prompt"; // Allow retry
 						break;
 				}
 
@@ -71,41 +79,36 @@ export function useGeolocation() {
 				}));
 			},
 			{
-				enableHighAccuracy: false,
-				timeout: 10000,
+				enableHighAccuracy: true, // Try GPS first
+				timeout: 15000,
 				maximumAge: 300000, // 5 minutes
 			},
 		);
 	}, []);
 
-	// Check permission state on mount
+	// Check if permission was previously granted on mount
 	useEffect(() => {
 		if (typeof window === "undefined" || !navigator.geolocation) {
 			setState((prev) => ({ ...prev, permissionState: "unavailable" }));
 			return;
 		}
 
-		// Check if permission was previously granted
-		if (navigator.permissions) {
-			navigator.permissions.query({ name: "geolocation" }).then((result) => {
-				setState((prev) => ({
-					...prev,
-					permissionState: result.state as "prompt" | "granted" | "denied",
-				}));
-
-				// If already granted, get position
-				if (result.state === "granted") {
-					requestPosition();
-				}
-
-				// Listen for permission changes
-				result.onchange = () => {
-					setState((prev) => ({
-						...prev,
-						permissionState: result.state as "prompt" | "granted" | "denied",
-					}));
-				};
-			});
+		// Only use Permissions API if available (not Safari)
+		if (navigator.permissions?.query) {
+			navigator.permissions
+				.query({ name: "geolocation" })
+				.then((result) => {
+					console.log("[Geo] Initial permission:", result.state);
+					if (result.state === "granted") {
+						// Auto-fetch if already granted
+						requestPosition();
+					} else if (result.state === "denied") {
+						setState((prev) => ({ ...prev, permissionState: "denied" }));
+					}
+				})
+				.catch(() => {
+					// Safari - permissions API not supported, that's OK
+				});
 		}
 	}, [requestPosition]);
 

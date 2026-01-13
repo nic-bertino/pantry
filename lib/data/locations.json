@@ -5,7 +5,10 @@
 			"en": "31st St. SDA Church",
 			"es": "Iglesia Adventista de la Calle 31"
 		},
-		"description": { "en": "", "es": "" },
+		"description": {
+			"en": "",
+			"es": ""
+		},
 		"address": "414 S. 31st St.",
 		"city": "San Diego",
 		"state": "CA",
@@ -18,18 +21,34 @@
 		},
 		"closures": null,
 		"eligibility": null,
-		"tags": ["Drive-through", "Walk-up"],
+		"tags": [
+			"Drive-through",
+			"Walk-up"
+		],
 		"hidden": false,
 		"schedule": {
 			"type": "special",
 			"pattern": {
 				"weekday": 3,
-				"occurrences": [2, 4],
+				"occurrences": [
+					2,
+					4
+				],
 				"timeRange": {
-					"open": { "hour": 12, "minute": 0 },
-					"close": { "hour": 14, "minute": 0 }
+					"open": {
+						"hour": 12,
+						"minute": 0
+					},
+					"close": {
+						"hour": 14,
+						"minute": 0
+					}
 				}
 			}
+		},
+		"coordinates": {
+			"lat": 32.7019985,
+			"lng": -117.127635
 		}
 	},
 	{
@@ -38,38 +57,68 @@
 			"en": "Abundant Grace Christian Center",
 			"es": "Centro Cristiano Gracia Abundante"
 		},
-		"description": { "en": "", "es": "" },
+		"description": {
+			"en": "",
+			"es": ""
+		},
 		"address": "5858 El Cajon Boulevard",
 		"city": "San Diego",
 		"state": "CA",
 		"postcode": "92115",
 		"phone": "619-788-2027",
 		"website": null,
-		"rawScheduleText": { "en": "Weekly", "es": "Semanal" },
+		"rawScheduleText": {
+			"en": "Weekly",
+			"es": "Semanal"
+		},
 		"closures": null,
 		"eligibility": null,
-		"tags": ["Walk-up"],
+		"tags": [
+			"Walk-up"
+		],
 		"hidden": false,
 		"schedule": {
 			"type": "weekly",
 			"schedule": {
 				"monday": {
-					"open": { "hour": 9, "minute": 0 },
-					"close": { "hour": 10, "minute": 0 }
+					"open": {
+						"hour": 9,
+						"minute": 0
+					},
+					"close": {
+						"hour": 10,
+						"minute": 0
+					}
 				},
 				"tuesday": null,
 				"wednesday": {
-					"open": { "hour": 20, "minute": 0 },
-					"close": { "hour": 20, "minute": 30 }
+					"open": {
+						"hour": 20,
+						"minute": 0
+					},
+					"close": {
+						"hour": 20,
+						"minute": 30
+					}
 				},
 				"thursday": null,
 				"friday": null,
 				"saturday": null,
 				"sunday": {
-					"open": { "hour": 11, "minute": 30 },
-					"close": { "hour": 12, "minute": 30 }
+					"open": {
+						"hour": 11,
+						"minute": 30
+					},
+					"close": {
+						"hour": 12,
+						"minute": 30
+					}
 				}
 			}
+		},
+		"coordinates": {
+			"lat": 32.7593768,
+			"lng": -117.0713586
 		}
 	},
 	{
@@ -88,34 +137,67 @@
 		"postcode": "92121",
 		"phone": "858-768-7424",
 		"website": null,
-		"rawScheduleText": { "en": "Weekly", "es": "Semanal" },
+		"rawScheduleText": {
+			"en": "Weekly",
+			"es": "Semanal"
+		},
 		"closures": null,
 		"eligibility": null,
-		"tags": ["Walk-up"],
+		"tags": [
+			"Walk-up"
+		],
 		"hidden": false,
 		"schedule": {
 			"type": "weekly",
 			"schedule": {
 				"monday": null,
 				"tuesday": {
-					"open": { "hour": 9, "minute": 0 },
-					"close": { "hour": 13, "minute": 0 }
+					"open": {
+						"hour": 9,
+						"minute": 0
+					},
+					"close": {
+						"hour": 13,
+						"minute": 0
+					}
 				},
 				"wednesday": {
-					"open": { "hour": 9, "minute": 0 },
-					"close": { "hour": 13, "minute": 0 }
+					"open": {
+						"hour": 9,
+						"minute": 0
+					},
+					"close": {
+						"hour": 13,
+						"minute": 0
+					}
 				},
 				"thursday": {
-					"open": { "hour": 9, "minute": 0 },
-					"close": { "hour": 13, "minute": 0 }
+					"open": {
+						"hour": 9,
+						"minute": 0
+					},
+					"close": {
+						"hour": 13,
+						"minute": 0
+					}
 				},
 				"friday": {
-					"open": { "hour": 9, "minute": 0 },
-					"close": { "hour": 13, "minute": 0 }
+					"open": {
+						"hour": 9,
+						"minute": 0
+					},
+					"close": {
+						"hour": 13,
+						"minute": 0
+					}
 				},
 				"saturday": null,
 				"sunday": null
 			}
+		},
+		"coordinates": {
+			"lat": 32.8832,
+			"lng": -117.2025
 		}
 	},
 	{
@@ -140,34 +222,70 @@
 		},
 		"closures": null,
 		"eligibility": null,
-		"tags": ["Drive-through"],
+		"tags": [
+			"Drive-through"
+		],
 		"hidden": false,
 		"schedule": {
 			"type": "weekly",
 			"schedule": {
 				"monday": {
-					"open": { "hour": 10, "minute": 0 },
-					"close": { "hour": 17, "minute": 0 }
+					"open": {
+						"hour": 10,
+						"minute": 0
+					},
+					"close": {
+						"hour": 17,
+						"minute": 0
+					}
 				},
 				"tuesday": {
-					"open": { "hour": 10, "minute": 0 },
-					"close": { "hour": 17, "minute": 0 }
+					"open": {
+						"hour": 10,
+						"minute": 0
+					},
+					"close": {
+						"hour": 17,
+						"minute": 0
+					}
 				},
 				"wednesday": {
-					"open": { "hour": 10, "minute": 0 },
-					"close": { "hour": 17, "minute": 0 }
+					"open": {
+						"hour": 10,
+						"minute": 0
+					},
+					"close": {
+						"hour": 17,
+						"minute": 0
+					}
 				},
 				"thursday": {
-					"open": { "hour": 10, "minute": 0 },
-					"close": { "hour": 17, "minute": 0 }
+					"open": {
+						"hour": 10,
+						"minute": 0
+					},
+					"close": {
+						"hour": 17,
+						"minute": 0
+					}
 				},
 				"friday": {
-					"open": { "hour": 10, "minute": 0 },
-					"close": { "hour": 16, "minute": 0 }
+					"open": {
+						"hour": 10,
+						"minute": 0
+					},
+					"close": {
+						"hour": 16,
+						"minute": 0
+					}
 				},
 				"saturday": null,
 				"sunday": null
 			}
+		},
+		"coordinates": {
+			"lat": 32.8207739,
+			"lng": -117.1377602
 		}
 	},
 	{
@@ -192,37 +310,79 @@
 		},
 		"closures": null,
 		"eligibility": null,
-		"tags": ["Walk-up"],
+		"tags": [
+			"Walk-up"
+		],
 		"hidden": false,
 		"schedule": {
 			"type": "weekly",
 			"schedule": {
 				"monday": {
-					"open": { "hour": 6, "minute": 30 },
-					"close": { "hour": 10, "minute": 0 }
+					"open": {
+						"hour": 6,
+						"minute": 30
+					},
+					"close": {
+						"hour": 10,
+						"minute": 0
+					}
 				},
 				"tuesday": {
-					"open": { "hour": 6, "minute": 30 },
-					"close": { "hour": 10, "minute": 0 }
+					"open": {
+						"hour": 6,
+						"minute": 30
+					},
+					"close": {
+						"hour": 10,
+						"minute": 0
+					}
 				},
 				"wednesday": {
-					"open": { "hour": 6, "minute": 30 },
-					"close": { "hour": 10, "minute": 0 }
+					"open": {
+						"hour": 6,
+						"minute": 30
+					},
+					"close": {
+						"hour": 10,
+						"minute": 0
+					}
 				},
 				"thursday": {
-					"open": { "hour": 6, "minute": 30 },
-					"close": { "hour": 10, "minute": 0 }
+					"open": {
+						"hour": 6,
+						"minute": 30
+					},
+					"close": {
+						"hour": 10,
+						"minute": 0
+					}
 				},
 				"friday": {
-					"open": { "hour": 6, "minute": 30 },
-					"close": { "hour": 10, "minute": 0 }
+					"open": {
+						"hour": 6,
+						"minute": 30
+					},
+					"close": {
+						"hour": 10,
+						"minute": 0
+					}
 				},
 				"saturday": {
-					"open": { "hour": 9, "minute": 0 },
-					"close": { "hour": 11, "minute": 30 }
+					"open": {
+						"hour": 9,
+						"minute": 0
+					},
+					"close": {
+						"hour": 11,
+						"minute": 30
+					}
 				},
 				"sunday": null
 			}
+		},
+		"coordinates": {
+			"lat": 33.216473,
+			"lng": -117.347524
 		}
 	},
 	{
@@ -241,34 +401,61 @@
 		"postcode": "92021",
 		"phone": "619-593-1077",
 		"website": null,
-		"rawScheduleText": { "en": "Weekly", "es": "Semanal" },
+		"rawScheduleText": {
+			"en": "Weekly",
+			"es": "Semanal"
+		},
 		"closures": null,
 		"eligibility": {
 			"en": "New clients will be asked to provide IDs. Diapers are provided for all children under the age of 3 years old once a month.",
 			"es": "Se pedirá identificación a clientes nuevos. Se proporcionan pañales para todos los niños menores de 3 años una vez al mes."
 		},
-		"tags": ["Walk-up"],
+		"tags": [
+			"Walk-up"
+		],
 		"hidden": false,
 		"schedule": {
 			"type": "weekly",
 			"schedule": {
 				"monday": {
-					"open": { "hour": 13, "minute": 0 },
-					"close": { "hour": 16, "minute": 0 }
+					"open": {
+						"hour": 13,
+						"minute": 0
+					},
+					"close": {
+						"hour": 16,
+						"minute": 0
+					}
 				},
 				"tuesday": null,
 				"wednesday": {
-					"open": { "hour": 14, "minute": 30 },
-					"close": { "hour": 16, "minute": 0 }
+					"open": {
+						"hour": 14,
+						"minute": 30
+					},
+					"close": {
+						"hour": 16,
+						"minute": 0
+					}
 				},
 				"thursday": null,
 				"friday": {
-					"open": { "hour": 13, "minute": 0 },
-					"close": { "hour": 18, "minute": 0 }
+					"open": {
+						"hour": 13,
+						"minute": 0
+					},
+					"close": {
+						"hour": 18,
+						"minute": 0
+					}
 				},
 				"saturday": null,
 				"sunday": null
 			}
+		},
+		"coordinates": {
+			"lat": 32.7945259,
+			"lng": -116.947841
 		}
 	},
 	{
@@ -287,37 +474,76 @@
 		"postcode": "92024",
 		"phone": "760-300-3238",
 		"website": null,
-		"rawScheduleText": { "en": "Weekly Mon-Fri", "es": "Semanal Lun-Vie" },
+		"rawScheduleText": {
+			"en": "Weekly Mon-Fri",
+			"es": "Semanal Lun-Vie"
+		},
 		"closures": null,
 		"eligibility": null,
-		"tags": ["Walk-up"],
+		"tags": [
+			"Walk-up"
+		],
 		"hidden": false,
 		"schedule": {
 			"type": "weekly",
 			"schedule": {
 				"monday": {
-					"open": { "hour": 9, "minute": 0 },
-					"close": { "hour": 14, "minute": 0 }
+					"open": {
+						"hour": 9,
+						"minute": 0
+					},
+					"close": {
+						"hour": 14,
+						"minute": 0
+					}
 				},
 				"tuesday": {
-					"open": { "hour": 9, "minute": 0 },
-					"close": { "hour": 14, "minute": 0 }
+					"open": {
+						"hour": 9,
+						"minute": 0
+					},
+					"close": {
+						"hour": 14,
+						"minute": 0
+					}
 				},
 				"wednesday": {
-					"open": { "hour": 9, "minute": 0 },
-					"close": { "hour": 14, "minute": 0 }
+					"open": {
+						"hour": 9,
+						"minute": 0
+					},
+					"close": {
+						"hour": 14,
+						"minute": 0
+					}
 				},
 				"thursday": {
-					"open": { "hour": 9, "minute": 0 },
-					"close": { "hour": 14, "minute": 0 }
+					"open": {
+						"hour": 9,
+						"minute": 0
+					},
+					"close": {
+						"hour": 14,
+						"minute": 0
+					}
 				},
 				"friday": {
-					"open": { "hour": 9, "minute": 0 },
-					"close": { "hour": 14, "minute": 0 }
+					"open": {
+						"hour": 9,
+						"minute": 0
+					},
+					"close": {
+						"hour": 14,
+						"minute": 0
+					}
 				},
 				"saturday": null,
 				"sunday": null
 			}
+		},
+		"coordinates": {
+			"lat": 33.0453,
+			"lng": -117.2919
 		}
 	},
 	{
@@ -326,7 +552,10 @@
 			"en": "Interfaith Community Services - Escondido",
 			"es": "Servicios Comunitarios Interreligiosos - Escondido"
 		},
-		"description": { "en": "", "es": "" },
+		"description": {
+			"en": "",
+			"es": ""
+		},
 		"address": "550 West Washington Ave., Suite B",
 		"city": "Escondido",
 		"state": "CA",
@@ -339,34 +568,70 @@
 		},
 		"closures": null,
 		"eligibility": null,
-		"tags": ["Walk-up"],
+		"tags": [
+			"Walk-up"
+		],
 		"hidden": false,
 		"schedule": {
 			"type": "weekly",
 			"schedule": {
 				"monday": {
-					"open": { "hour": 8, "minute": 30 },
-					"close": { "hour": 11, "minute": 0 }
+					"open": {
+						"hour": 8,
+						"minute": 30
+					},
+					"close": {
+						"hour": 11,
+						"minute": 0
+					}
 				},
 				"tuesday": {
-					"open": { "hour": 8, "minute": 30 },
-					"close": { "hour": 11, "minute": 0 }
+					"open": {
+						"hour": 8,
+						"minute": 30
+					},
+					"close": {
+						"hour": 11,
+						"minute": 0
+					}
 				},
 				"wednesday": {
-					"open": { "hour": 8, "minute": 30 },
-					"close": { "hour": 11, "minute": 0 }
+					"open": {
+						"hour": 8,
+						"minute": 30
+					},
+					"close": {
+						"hour": 11,
+						"minute": 0
+					}
 				},
 				"thursday": {
-					"open": { "hour": 8, "minute": 30 },
-					"close": { "hour": 11, "minute": 0 }
+					"open": {
+						"hour": 8,
+						"minute": 30
+					},
+					"close": {
+						"hour": 11,
+						"minute": 0
+					}
 				},
 				"friday": {
-					"open": { "hour": 8, "minute": 30 },
-					"close": { "hour": 11, "minute": 0 }
+					"open": {
+						"hour": 8,
+						"minute": 30
+					},
+					"close": {
+						"hour": 11,
+						"minute": 0
+					}
 				},
 				"saturday": null,
 				"sunday": null
 			}
+		},
+		"coordinates": {
+			"lat": 33.1217,
+			"lng": -117.0865
 		}
 	},
 	{
@@ -375,7 +640,10 @@
 			"en": "Fallbrook Food Pantry",
 			"es": "Despensa de Alimentos de Fallbrook"
 		},
-		"description": { "en": "", "es": "" },
+		"description": {
+			"en": "",
+			"es": ""
+		},
 		"address": "140 North Brandon Rd.",
 		"city": "Fallbrook",
 		"state": "CA",
@@ -391,34 +659,70 @@
 			"en": "No eligibility required for your first 3 visits. After that, registration is needed.",
 			"es": "No se requiere elegibilidad para sus primeras 3 visitas. Después, se necesita registro."
 		},
-		"tags": ["Walk-up"],
+		"tags": [
+			"Walk-up"
+		],
 		"hidden": false,
 		"schedule": {
 			"type": "weekly",
 			"schedule": {
 				"monday": {
-					"open": { "hour": 9, "minute": 30 },
-					"close": { "hour": 12, "minute": 30 }
+					"open": {
+						"hour": 9,
+						"minute": 30
+					},
+					"close": {
+						"hour": 12,
+						"minute": 30
+					}
 				},
 				"tuesday": {
-					"open": { "hour": 9, "minute": 30 },
-					"close": { "hour": 12, "minute": 30 }
+					"open": {
+						"hour": 9,
+						"minute": 30
+					},
+					"close": {
+						"hour": 12,
+						"minute": 30
+					}
 				},
 				"wednesday": {
-					"open": { "hour": 9, "minute": 30 },
-					"close": { "hour": 12, "minute": 30 }
+					"open": {
+						"hour": 9,
+						"minute": 30
+					},
+					"close": {
+						"hour": 12,
+						"minute": 30
+					}
 				},
 				"thursday": {
-					"open": { "hour": 9, "minute": 30 },
-					"close": { "hour": 12, "minute": 30 }
+					"open": {
+						"hour": 9,
+						"minute": 30
+					},
+					"close": {
+						"hour": 12,
+						"minute": 30
+					}
 				},
 				"friday": {
-					"open": { "hour": 9, "minute": 30 },
-					"close": { "hour": 18, "minute": 0 }
+					"open": {
+						"hour": 9,
+						"minute": 30
+					},
+					"close": {
+						"hour": 18,
+						"minute": 0
+					}
 				},
 				"saturday": null,
 				"sunday": null
 			}
+		},
+		"coordinates": {
+			"lat": 33.382706,
+			"lng": -117.244602
 		}
 	},
 	{
@@ -427,7 +731,10 @@
 			"en": "Ramona Food and Clothes Closet",
 			"es": "Despensa de Alimentos y Ropa de Ramona"
 		},
-		"description": { "en": "", "es": "" },
+		"description": {
+			"en": "",
+			"es": ""
+		},
 		"address": "773 Main Street",
 		"city": "Ramona",
 		"state": "CA",
@@ -443,34 +750,70 @@
 			"en": "Only for Ramona and North Inland County residents",
 			"es": "Solo para residentes de Ramona y el norte del condado interior"
 		},
-		"tags": ["Walk-up"],
+		"tags": [
+			"Walk-up"
+		],
 		"hidden": false,
 		"schedule": {
 			"type": "weekly",
 			"schedule": {
 				"monday": {
-					"open": { "hour": 9, "minute": 30 },
-					"close": { "hour": 17, "minute": 0 }
+					"open": {
+						"hour": 9,
+						"minute": 30
+					},
+					"close": {
+						"hour": 17,
+						"minute": 0
+					}
 				},
 				"tuesday": {
-					"open": { "hour": 9, "minute": 30 },
-					"close": { "hour": 17, "minute": 0 }
+					"open": {
+						"hour": 9,
+						"minute": 30
+					},
+					"close": {
+						"hour": 17,
+						"minute": 0
+					}
 				},
 				"wednesday": {
-					"open": { "hour": 9, "minute": 30 },
-					"close": { "hour": 17, "minute": 0 }
+					"open": {
+						"hour": 9,
+						"minute": 30
+					},
+					"close": {
+						"hour": 17,
+						"minute": 0
+					}
 				},
 				"thursday": {
-					"open": { "hour": 9, "minute": 30 },
-					"close": { "hour": 17, "minute": 0 }
+					"open": {
+						"hour": 9,
+						"minute": 30
+					},
+					"close": {
+						"hour": 17,
+						"minute": 0
+					}
 				},
 				"friday": {
-					"open": { "hour": 9, "minute": 30 },
-					"close": { "hour": 17, "minute": 0 }
+					"open": {
+						"hour": 9,
+						"minute": 30
+					},
+					"close": {
+						"hour": 17,
+						"minute": 0
+					}
 				},
 				"saturday": null,
 				"sunday": null
 			}
+		},
+		"coordinates": {
+			"lat": 33.044454,
+			"lng": -116.865507
 		}
 	},
 	{
@@ -495,37 +838,73 @@
 		},
 		"closures": null,
 		"eligibility": null,
-		"tags": ["Walk-up"],
+		"tags": [
+			"Walk-up"
+		],
 		"hidden": false,
 		"schedule": {
 			"type": "weekly",
 			"schedule": {
 				"monday": {
-					"open": { "hour": 10, "minute": 0 },
-					"close": { "hour": 12, "minute": 0 }
+					"open": {
+						"hour": 10,
+						"minute": 0
+					},
+					"close": {
+						"hour": 12,
+						"minute": 0
+					}
 				},
 				"tuesday": {
-					"open": { "hour": 10, "minute": 0 },
-					"close": { "hour": 12, "minute": 0 }
+					"open": {
+						"hour": 10,
+						"minute": 0
+					},
+					"close": {
+						"hour": 12,
+						"minute": 0
+					}
 				},
 				"wednesday": {
-					"open": { "hour": 10, "minute": 0 },
-					"close": { "hour": 12, "minute": 0 }
+					"open": {
+						"hour": 10,
+						"minute": 0
+					},
+					"close": {
+						"hour": 12,
+						"minute": 0
+					}
 				},
 				"thursday": {
-					"open": { "hour": 10, "minute": 0 },
-					"close": { "hour": 12, "minute": 0 }
+					"open": {
+						"hour": 10,
+						"minute": 0
+					},
+					"close": {
+						"hour": 12,
+						"minute": 0
+					}
 				},
 				"friday": null,
 				"saturday": null,
 				"sunday": null
 			}
+		},
+		"coordinates": {
+			"lat": 32.8581854,
+			"lng": -116.9257777
 		}
 	},
 	{
 		"id": "heavens-windows",
-		"name": { "en": "Heaven's Windows", "es": "Ventanas del Cielo" },
-		"description": { "en": "", "es": "" },
+		"name": {
+			"en": "Heaven's Windows",
+			"es": "Ventanas del Cielo"
+		},
+		"description": {
+			"en": "",
+			"es": ""
+		},
 		"address": "8848 Troy St.",
 		"city": "Spring Valley",
 		"state": "CA",
@@ -538,31 +917,62 @@
 		},
 		"closures": null,
 		"eligibility": null,
-		"tags": ["Drive-through", "Walk-up"],
+		"tags": [
+			"Drive-through",
+			"Walk-up"
+		],
 		"hidden": false,
 		"schedule": {
 			"type": "weekly",
 			"schedule": {
 				"monday": null,
 				"tuesday": {
-					"open": { "hour": 9, "minute": 0 },
-					"close": { "hour": 12, "minute": 0 }
+					"open": {
+						"hour": 9,
+						"minute": 0
+					},
+					"close": {
+						"hour": 12,
+						"minute": 0
+					}
 				},
 				"wednesday": {
-					"open": { "hour": 9, "minute": 0 },
-					"close": { "hour": 12, "minute": 0 }
+					"open": {
+						"hour": 9,
+						"minute": 0
+					},
+					"close": {
+						"hour": 12,
+						"minute": 0
+					}
 				},
 				"thursday": {
-					"open": { "hour": 9, "minute": 0 },
-					"close": { "hour": 12, "minute": 0 }
+					"open": {
+						"hour": 9,
+						"minute": 0
+					},
+					"close": {
+						"hour": 12,
+						"minute": 0
+					}
 				},
 				"friday": {
-					"open": { "hour": 9, "minute": 0 },
-					"close": { "hour": 12, "minute": 0 }
+					"open": {
+						"hour": 9,
+						"minute": 0
+					},
+					"close": {
+						"hour": 12,
+						"minute": 0
+					}
 				},
 				"saturday": null,
 				"sunday": null
 			}
+		},
+		"coordinates": {
+			"lat": 32.737293,
+			"lng": -117.00924
 		}
 	},
 	{
@@ -571,7 +981,10 @@
 			"en": "Imperial Beach Neighborhood Center",
 			"es": "Centro Vecinal de Imperial Beach"
 		},
-		"description": { "en": "", "es": "" },
+		"description": {
+			"en": "",
+			"es": ""
+		},
 		"address": "455 Palm Ave",
 		"city": "Imperial Beach",
 		"state": "CA",
@@ -584,31 +997,61 @@
 		},
 		"closures": null,
 		"eligibility": null,
-		"tags": ["Walk-up"],
+		"tags": [
+			"Walk-up"
+		],
 		"hidden": false,
 		"schedule": {
 			"type": "weekly",
 			"schedule": {
 				"monday": {
-					"open": { "hour": 9, "minute": 0 },
-					"close": { "hour": 12, "minute": 0 }
+					"open": {
+						"hour": 9,
+						"minute": 0
+					},
+					"close": {
+						"hour": 12,
+						"minute": 0
+					}
 				},
 				"tuesday": {
-					"open": { "hour": 9, "minute": 0 },
-					"close": { "hour": 12, "minute": 0 }
+					"open": {
+						"hour": 9,
+						"minute": 0
+					},
+					"close": {
+						"hour": 12,
+						"minute": 0
+					}
 				},
 				"wednesday": {
-					"open": { "hour": 9, "minute": 0 },
-					"close": { "hour": 12, "minute": 0 }
+					"open": {
+						"hour": 9,
+						"minute": 0
+					},
+					"close": {
+						"hour": 12,
+						"minute": 0
+					}
 				},
 				"thursday": {
-					"open": { "hour": 9, "minute": 0 },
-					"close": { "hour": 12, "minute": 0 }
+					"open": {
+						"hour": 9,
+						"minute": 0
+					},
+					"close": {
+						"hour": 12,
+						"minute": 0
+					}
 				},
 				"friday": null,
 				"saturday": null,
 				"sunday": null
 			}
+		},
+		"coordinates": {
+			"lat": 32.58337,
+			"lng": -117.12334
 		}
 	},
 	{
@@ -617,7 +1060,10 @@
 			"en": "South Bay Food Pantry",
 			"es": "Despensa de Alimentos de South Bay"
 		},
-		"description": { "en": "", "es": "" },
+		"description": {
+			"en": "",
+			"es": ""
+		},
 		"address": "760 First Ave.",
 		"city": "Chula Vista",
 		"state": "CA",
@@ -630,7 +1076,9 @@
 		},
 		"closures": null,
 		"eligibility": null,
-		"tags": ["Walk-up"],
+		"tags": [
+			"Walk-up"
+		],
 		"hidden": false,
 		"schedule": {
 			"type": "weekly",
@@ -641,11 +1089,21 @@
 				"thursday": null,
 				"friday": null,
 				"saturday": {
-					"open": { "hour": 11, "minute": 0 },
-					"close": { "hour": 12, "minute": 30 }
+					"open": {
+						"hour": 11,
+						"minute": 0
+					},
+					"close": {
+						"hour": 12,
+						"minute": 30
+					}
 				},
 				"sunday": null
 			}
+		},
+		"coordinates": {
+			"lat": 32.6399,
+			"lng": -117.0796
 		}
 	},
 	{
@@ -654,7 +1112,10 @@
 			"en": "Salvation Army Chula Vista",
 			"es": "Ejército de Salvación Chula Vista"
 		},
-		"description": { "en": "", "es": "" },
+		"description": {
+			"en": "",
+			"es": ""
+		},
 		"address": "648 3rd Avenue",
 		"city": "Chula Vista",
 		"state": "CA",
@@ -670,7 +1131,9 @@
 			"en": "New guests are asked to bring a photo ID for everyone in the household and proof of residence",
 			"es": "Se pide a los nuevos visitantes traer identificación con foto para todos en el hogar y comprobante de domicilio"
 		},
-		"tags": ["Walk-up"],
+		"tags": [
+			"Walk-up"
+		],
 		"hidden": false,
 		"schedule": {
 			"type": "weekly",
@@ -678,17 +1141,33 @@
 				"monday": null,
 				"tuesday": null,
 				"wednesday": {
-					"open": { "hour": 9, "minute": 0 },
-					"close": { "hour": 10, "minute": 30 }
+					"open": {
+						"hour": 9,
+						"minute": 0
+					},
+					"close": {
+						"hour": 10,
+						"minute": 30
+					}
 				},
 				"thursday": {
-					"open": { "hour": 9, "minute": 0 },
-					"close": { "hour": 10, "minute": 30 }
+					"open": {
+						"hour": 9,
+						"minute": 0
+					},
+					"close": {
+						"hour": 10,
+						"minute": 30
+					}
 				},
 				"friday": null,
 				"saturday": null,
 				"sunday": null
 			}
+		},
+		"coordinates": {
+			"lat": 32.629095,
+			"lng": -117.075759
 		}
 	},
 	{
@@ -697,7 +1176,10 @@
 			"en": "Oceanside Sanctuary (First Christian Church)",
 			"es": "Santuario de Oceanside (Primera Iglesia Cristiana)"
 		},
-		"description": { "en": "", "es": "" },
+		"description": {
+			"en": "",
+			"es": ""
+		},
 		"address": "204 South Freeman Street",
 		"city": "Oceanside",
 		"state": "CA",
@@ -709,19 +1191,37 @@
 			"es": "1er y 3er viernes 4:30-5:30pm, servicio para mayores 1er y 3er lunes"
 		},
 		"closures": null,
-		"eligibility": { "en": "Call first", "es": "Llamar primero" },
-		"tags": ["Drive-through"],
+		"eligibility": {
+			"en": "Call first",
+			"es": "Llamar primero"
+		},
+		"tags": [
+			"Drive-through"
+		],
 		"hidden": false,
 		"schedule": {
 			"type": "special",
 			"pattern": {
 				"weekday": 5,
-				"occurrences": [1, 3],
+				"occurrences": [
+					1,
+					3
+				],
 				"timeRange": {
-					"open": { "hour": 16, "minute": 30 },
-					"close": { "hour": 17, "minute": 30 }
+					"open": {
+						"hour": 16,
+						"minute": 30
+					},
+					"close": {
+						"hour": 17,
+						"minute": 30
+					}
 				}
 			}
+		},
+		"coordinates": {
+			"lat": 33.1945894,
+			"lng": -117.3769174
 		}
 	},
 	{
@@ -730,7 +1230,10 @@
 			"en": "Rock Church - City Heights",
 			"es": "Iglesia Rock - City Heights"
 		},
-		"description": { "en": "", "es": "" },
+		"description": {
+			"en": "",
+			"es": ""
+		},
 		"address": "4001 El Cajon Blvd",
 		"city": "San Diego",
 		"state": "CA",
@@ -743,18 +1246,33 @@
 		},
 		"closures": null,
 		"eligibility": null,
-		"tags": ["Drive-through", "Walk-up"],
+		"tags": [
+			"Drive-through",
+			"Walk-up"
+		],
 		"hidden": false,
 		"schedule": {
 			"type": "special",
 			"pattern": {
 				"weekday": 4,
-				"occurrences": [3],
+				"occurrences": [
+					3
+				],
 				"timeRange": {
-					"open": { "hour": 10, "minute": 0 },
-					"close": { "hour": 12, "minute": 0 }
+					"open": {
+						"hour": 10,
+						"minute": 0
+					},
+					"close": {
+						"hour": 12,
+						"minute": 0
+					}
 				}
 			}
+		},
+		"coordinates": {
+			"lat": 32.7552219,
+			"lng": -117.1053914
 		}
 	},
 	{
@@ -779,23 +1297,40 @@
 		},
 		"closures": null,
 		"eligibility": null,
-		"tags": ["Drive-through"],
+		"tags": [
+			"Drive-through"
+		],
 		"hidden": false,
 		"schedule": {
 			"type": "special",
 			"pattern": {
 				"weekday": 4,
-				"occurrences": [4],
+				"occurrences": [
+					4
+				],
 				"timeRange": {
-					"open": { "hour": 10, "minute": 0 },
-					"close": { "hour": 12, "minute": 0 }
+					"open": {
+						"hour": 10,
+						"minute": 0
+					},
+					"close": {
+						"hour": 12,
+						"minute": 0
+					}
 				}
 			}
+		},
+		"coordinates": {
+			"lat": 32.6220265,
+			"lng": -116.9676082
 		}
 	},
 	{
 		"id": "alpine-pantry",
-		"name": { "en": "Alpine Pantry", "es": "Despensa de Alpine" },
+		"name": {
+			"en": "Alpine Pantry",
+			"es": "Despensa de Alpine"
+		},
 		"description": {
 			"en": "1st and 3rd Wednesdays: Mobile Pantry (fresh produce and dry goods). 2nd and 4th Wednesdays: Produce Pantry (fresh produce).",
 			"es": "1er y 3er miércoles: Despensa móvil (productos frescos y secos). 2do y 4to miércoles: Despensa de productos frescos."
@@ -812,18 +1347,35 @@
 		},
 		"closures": null,
 		"eligibility": null,
-		"tags": ["Walk-up"],
+		"tags": [
+			"Walk-up"
+		],
 		"hidden": false,
 		"schedule": {
 			"type": "special",
 			"pattern": {
 				"weekday": 3,
-				"occurrences": [1, 2, 3, 4],
+				"occurrences": [
+					1,
+					2,
+					3,
+					4
+				],
 				"timeRange": {
-					"open": { "hour": 8, "minute": 30 },
-					"close": { "hour": 9, "minute": 30 }
+					"open": {
+						"hour": 8,
+						"minute": 30
+					},
+					"close": {
+						"hour": 9,
+						"minute": 30
+					}
 				}
 			}
+		},
+		"coordinates": {
+			"lat": 32.835816,
+			"lng": -116.773774
 		}
 	},
 	{
@@ -832,7 +1384,10 @@
 			"en": "Feeding San Diego Produce Pantry",
 			"es": "Despensa de Productos Frescos Feeding San Diego"
 		},
-		"description": { "en": "", "es": "" },
+		"description": {
+			"en": "",
+			"es": ""
+		},
 		"address": "9477 Waples St",
 		"city": "San Diego",
 		"state": "CA",
@@ -845,23 +1400,41 @@
 		},
 		"closures": null,
 		"eligibility": null,
-		"tags": ["Walk-up"],
+		"tags": [
+			"Walk-up"
+		],
 		"hidden": false,
 		"schedule": {
 			"type": "special",
 			"pattern": {
 				"weekday": 6,
-				"occurrences": [2, 4],
+				"occurrences": [
+					2,
+					4
+				],
 				"timeRange": {
-					"open": { "hour": 10, "minute": 0 },
-					"close": { "hour": 11, "minute": 0 }
+					"open": {
+						"hour": 10,
+						"minute": 0
+					},
+					"close": {
+						"hour": 11,
+						"minute": 0
+					}
 				}
 			}
+		},
+		"coordinates": {
+			"lat": 32.9045925,
+			"lng": -117.18061
 		}
 	},
 	{
 		"id": "us4warriors",
-		"name": { "en": "Us4Warriors", "es": "Us4Warriors" },
+		"name": {
+			"en": "Us4Warriors",
+			"es": "Us4Warriors"
+		},
 		"description": {
 			"en": "Sign-up through appointment system at website",
 			"es": "Regístrese a través del sistema de citas en el sitio web"
@@ -881,31 +1454,61 @@
 			"en": "Active Duty, Veterans, and their families. Military card required.",
 			"es": "Personal en servicio activo, veteranos y sus familias. Se requiere credencial militar."
 		},
-		"tags": ["Walk-up"],
+		"tags": [
+			"Walk-up"
+		],
 		"hidden": false,
 		"schedule": {
 			"type": "weekly",
 			"schedule": {
 				"monday": {
-					"open": { "hour": 11, "minute": 0 },
-					"close": { "hour": 13, "minute": 0 }
+					"open": {
+						"hour": 11,
+						"minute": 0
+					},
+					"close": {
+						"hour": 13,
+						"minute": 0
+					}
 				},
 				"tuesday": {
-					"open": { "hour": 11, "minute": 0 },
-					"close": { "hour": 13, "minute": 0 }
+					"open": {
+						"hour": 11,
+						"minute": 0
+					},
+					"close": {
+						"hour": 13,
+						"minute": 0
+					}
 				},
 				"wednesday": {
-					"open": { "hour": 11, "minute": 0 },
-					"close": { "hour": 13, "minute": 0 }
+					"open": {
+						"hour": 11,
+						"minute": 0
+					},
+					"close": {
+						"hour": 13,
+						"minute": 0
+					}
 				},
 				"thursday": {
-					"open": { "hour": 11, "minute": 0 },
-					"close": { "hour": 13, "minute": 0 }
+					"open": {
+						"hour": 11,
+						"minute": 0
+					},
+					"close": {
+						"hour": 13,
+						"minute": 0
+					}
 				},
 				"friday": null,
 				"saturday": null,
 				"sunday": null
 			}
+		},
+		"coordinates": {
+			"lat": 32.5923,
+			"lng": -117.0645
 		}
 	},
 	{
@@ -914,7 +1517,10 @@
 			"en": "The Community Food Connection",
 			"es": "Conexión Comunitaria de Alimentos"
 		},
-		"description": { "en": "", "es": "" },
+		"description": {
+			"en": "",
+			"es": ""
+		},
 		"address": "14047 Twin Peaks Road",
 		"city": "Poway",
 		"state": "CA",
@@ -927,34 +1533,64 @@
 		},
 		"closures": null,
 		"eligibility": null,
-		"tags": ["Drive-through"],
+		"tags": [
+			"Drive-through"
+		],
 		"hidden": false,
 		"schedule": {
 			"type": "weekly",
 			"schedule": {
 				"monday": {
-					"open": { "hour": 15, "minute": 0 },
-					"close": { "hour": 18, "minute": 0 }
+					"open": {
+						"hour": 15,
+						"minute": 0
+					},
+					"close": {
+						"hour": 18,
+						"minute": 0
+					}
 				},
 				"tuesday": null,
 				"wednesday": {
-					"open": { "hour": 15, "minute": 0 },
-					"close": { "hour": 18, "minute": 0 }
+					"open": {
+						"hour": 15,
+						"minute": 0
+					},
+					"close": {
+						"hour": 18,
+						"minute": 0
+					}
 				},
 				"thursday": null,
 				"friday": {
-					"open": { "hour": 15, "minute": 0 },
-					"close": { "hour": 18, "minute": 0 }
+					"open": {
+						"hour": 15,
+						"minute": 0
+					},
+					"close": {
+						"hour": 18,
+						"minute": 0
+					}
 				},
 				"saturday": null,
 				"sunday": null
 			}
+		},
+		"coordinates": {
+			"lat": 32.9774451,
+			"lng": -117.0259049
 		}
 	},
 	{
 		"id": "santee-food-bank",
-		"name": { "en": "Santee Food Bank", "es": "Banco de Alimentos de Santee" },
-		"description": { "en": "", "es": "" },
+		"name": {
+			"en": "Santee Food Bank",
+			"es": "Banco de Alimentos de Santee"
+		},
+		"description": {
+			"en": "",
+			"es": ""
+		},
 		"address": "9735 Halberns Blvd",
 		"city": "Santee",
 		"state": "CA",
@@ -970,7 +1606,9 @@
 			"en": "Santee Residents ONLY. Requires utilities bill, proof of income, and ID.",
 			"es": "SOLO residentes de Santee. Requiere recibo de servicios, comprobante de ingresos e identificación."
 		},
-		"tags": ["Drive-through"],
+		"tags": [
+			"Drive-through"
+		],
 		"hidden": false,
 		"schedule": {
 			"type": "weekly",
@@ -978,20 +1616,42 @@
 				"monday": null,
 				"tuesday": null,
 				"wednesday": {
-					"open": { "hour": 8, "minute": 0 },
-					"close": { "hour": 11, "minute": 0 }
+					"open": {
+						"hour": 8,
+						"minute": 0
+					},
+					"close": {
+						"hour": 11,
+						"minute": 0
+					}
 				},
 				"thursday": null,
 				"friday": {
-					"open": { "hour": 8, "minute": 0 },
-					"close": { "hour": 11, "minute": 0 }
+					"open": {
+						"hour": 8,
+						"minute": 0
+					},
+					"close": {
+						"hour": 11,
+						"minute": 0
+					}
 				},
 				"saturday": {
-					"open": { "hour": 8, "minute": 0 },
-					"close": { "hour": 11, "minute": 0 }
+					"open": {
+						"hour": 8,
+						"minute": 0
+					},
+					"close": {
+						"hour": 11,
+						"minute": 0
+					}
 				},
 				"sunday": null
 			}
+		},
+		"coordinates": {
+			"lat": 32.854878,
+			"lng": -116.993097
 		}
 	},
 	{
@@ -1019,34 +1679,70 @@
 			"en": "Families with children under 18 or seniors over age 65. Child must be present.",
 			"es": "Familias con niños menores de 18 o mayores de 65 años. El niño debe estar presente."
 		},
-		"tags": ["Walk-up"],
+		"tags": [
+			"Walk-up"
+		],
 		"hidden": false,
 		"schedule": {
 			"type": "weekly",
 			"schedule": {
 				"monday": {
-					"open": { "hour": 13, "minute": 0 },
-					"close": { "hour": 15, "minute": 0 }
+					"open": {
+						"hour": 13,
+						"minute": 0
+					},
+					"close": {
+						"hour": 15,
+						"minute": 0
+					}
 				},
 				"tuesday": {
-					"open": { "hour": 13, "minute": 0 },
-					"close": { "hour": 15, "minute": 0 }
+					"open": {
+						"hour": 13,
+						"minute": 0
+					},
+					"close": {
+						"hour": 15,
+						"minute": 0
+					}
 				},
 				"wednesday": {
-					"open": { "hour": 13, "minute": 0 },
-					"close": { "hour": 15, "minute": 0 }
+					"open": {
+						"hour": 13,
+						"minute": 0
+					},
+					"close": {
+						"hour": 15,
+						"minute": 0
+					}
 				},
 				"thursday": {
-					"open": { "hour": 13, "minute": 0 },
-					"close": { "hour": 15, "minute": 0 }
+					"open": {
+						"hour": 13,
+						"minute": 0
+					},
+					"close": {
+						"hour": 15,
+						"minute": 0
+					}
 				},
 				"friday": {
-					"open": { "hour": 13, "minute": 0 },
-					"close": { "hour": 15, "minute": 0 }
+					"open": {
+						"hour": 13,
+						"minute": 0
+					},
+					"close": {
+						"hour": 15,
+						"minute": 0
+					}
 				},
 				"saturday": null,
 				"sunday": null
 			}
+		},
+		"coordinates": {
+			"lat": 32.747452,
+			"lng": -117.112259
 		}
 	},
 	{
@@ -1055,7 +1751,10 @@
 			"en": "Ocean Beach Emergency Food Inc.",
 			"es": "Alimentos de Emergencia de Ocean Beach"
 		},
-		"description": { "en": "", "es": "" },
+		"description": {
+			"en": "",
+			"es": ""
+		},
 		"address": "1984 Sunset Cliffs Boulevard",
 		"city": "San Diego",
 		"state": "CA",
@@ -1068,15 +1767,23 @@
 		},
 		"closures": null,
 		"eligibility": null,
-		"tags": ["Walk-up"],
+		"tags": [
+			"Walk-up"
+		],
 		"hidden": false,
 		"schedule": {
 			"type": "weekly",
 			"schedule": {
 				"monday": null,
 				"tuesday": {
-					"open": { "hour": 9, "minute": 30 },
-					"close": { "hour": 12, "minute": 0 }
+					"open": {
+						"hour": 9,
+						"minute": 30
+					},
+					"close": {
+						"hour": 12,
+						"minute": 0
+					}
 				},
 				"wednesday": null,
 				"thursday": null,
@@ -1084,6 +1791,10 @@
 				"saturday": null,
 				"sunday": null
 			}
+		},
+		"coordinates": {
+			"lat": 32.746359,
+			"lng": -117.246563
 		}
 	},
 	{
@@ -1092,7 +1803,10 @@
 			"en": "Most Precious Blood Church",
 			"es": "Iglesia Sangre Preciosa"
 		},
-		"description": { "en": "", "es": "" },
+		"description": {
+			"en": "",
+			"es": ""
+		},
 		"address": "1245 4th Avenue",
 		"city": "Chula Vista",
 		"state": "CA",
@@ -1108,30 +1822,51 @@
 			"en": "Residents of 91910, 91911, and 92154 only. Show proof of address or call ahead.",
 			"es": "Solo residentes de 91910, 91911 y 92154. Muestre comprobante de domicilio o llame antes."
 		},
-		"tags": ["Walk-up"],
+		"tags": [
+			"Walk-up"
+		],
 		"hidden": false,
 		"schedule": {
 			"type": "weekly",
 			"schedule": {
 				"monday": null,
 				"tuesday": {
-					"open": { "hour": 11, "minute": 0 },
-					"close": { "hour": 13, "minute": 0 }
+					"open": {
+						"hour": 11,
+						"minute": 0
+					},
+					"close": {
+						"hour": 13,
+						"minute": 0
+					}
 				},
 				"wednesday": null,
 				"thursday": {
-					"open": { "hour": 11, "minute": 0 },
-					"close": { "hour": 13, "minute": 0 }
+					"open": {
+						"hour": 11,
+						"minute": 0
+					},
+					"close": {
+						"hour": 13,
+						"minute": 0
+					}
 				},
 				"friday": null,
 				"saturday": null,
 				"sunday": null
 			}
+		},
+		"coordinates": {
+			"lat": 32.608539,
+			"lng": -117.069925
 		}
 	},
 	{
 		"id": "faith-tabernacle",
-		"name": { "en": "Faith Tabernacle", "es": "Tabernáculo de Fe" },
+		"name": {
+			"en": "Faith Tabernacle",
+			"es": "Tabernáculo de Fe"
+		},
 		"description": {
 			"en": "Walk-ups from 3:30-4:20pm, Drive-through from 4:30-6pm",
 			"es": "A pie de 3:30-4:20pm, En auto de 4:30-6pm"
@@ -1148,14 +1883,22 @@
 		},
 		"closures": null,
 		"eligibility": null,
-		"tags": ["Walk-up"],
+		"tags": [
+			"Walk-up"
+		],
 		"hidden": false,
 		"schedule": {
 			"type": "weekly",
 			"schedule": {
 				"monday": {
-					"open": { "hour": 15, "minute": 30 },
-					"close": { "hour": 18, "minute": 0 }
+					"open": {
+						"hour": 15,
+						"minute": 30
+					},
+					"close": {
+						"hour": 18,
+						"minute": 0
+					}
 				},
 				"tuesday": null,
 				"wednesday": null,
@@ -1164,12 +1907,22 @@
 				"saturday": null,
 				"sunday": null
 			}
+		},
+		"coordinates": {
+			"lat": 32.76077,
+			"lng": -117.113521
 		}
 	},
 	{
 		"id": "project-1-1",
-		"name": { "en": "Project 1:1", "es": "Proyecto 1:1" },
-		"description": { "en": "", "es": "" },
+		"name": {
+			"en": "Project 1:1",
+			"es": "Proyecto 1:1"
+		},
+		"description": {
+			"en": "",
+			"es": ""
+		},
 		"address": "633 9th St",
 		"city": "Imperial Beach",
 		"state": "CA",
@@ -1185,40 +1938,82 @@
 			"en": "Call to schedule an appointment",
 			"es": "Llame para programar una cita"
 		},
-		"tags": ["Walk-up"],
+		"tags": [
+			"Walk-up"
+		],
 		"hidden": false,
 		"schedule": {
 			"type": "weekly",
 			"schedule": {
 				"monday": {
-					"open": { "hour": 12, "minute": 0 },
-					"close": { "hour": 16, "minute": 0 }
+					"open": {
+						"hour": 12,
+						"minute": 0
+					},
+					"close": {
+						"hour": 16,
+						"minute": 0
+					}
 				},
 				"tuesday": null,
 				"wednesday": {
-					"open": { "hour": 12, "minute": 0 },
-					"close": { "hour": 16, "minute": 0 }
+					"open": {
+						"hour": 12,
+						"minute": 0
+					},
+					"close": {
+						"hour": 16,
+						"minute": 0
+					}
 				},
 				"thursday": null,
 				"friday": {
-					"open": { "hour": 12, "minute": 0 },
-					"close": { "hour": 16, "minute": 0 }
+					"open": {
+						"hour": 12,
+						"minute": 0
+					},
+					"close": {
+						"hour": 16,
+						"minute": 0
+					}
 				},
 				"saturday": {
-					"open": { "hour": 12, "minute": 0 },
-					"close": { "hour": 16, "minute": 0 }
+					"open": {
+						"hour": 12,
+						"minute": 0
+					},
+					"close": {
+						"hour": 16,
+						"minute": 0
+					}
 				},
 				"sunday": {
-					"open": { "hour": 11, "minute": 0 },
-					"close": { "hour": 12, "minute": 0 }
+					"open": {
+						"hour": 11,
+						"minute": 0
+					},
+					"close": {
+						"hour": 12,
+						"minute": 0
+					}
 				}
 			}
+		},
+		"coordinates": {
+			"lat": 32.5789991,
+			"lng": -117.1143764
 		}
 	},
 	{
 		"id": "st-rose-of-lima",
-		"name": { "en": "St. Rose of Lima", "es": "Santa Rosa de Lima" },
-		"description": { "en": "", "es": "" },
+		"name": {
+			"en": "St. Rose of Lima",
+			"es": "Santa Rosa de Lima"
+		},
+		"description": {
+			"en": "",
+			"es": ""
+		},
 		"address": "278 Alvarado Street",
 		"city": "Chula Vista",
 		"state": "CA",
@@ -1231,7 +2026,9 @@
 		},
 		"closures": null,
 		"eligibility": null,
-		"tags": ["Walk-up"],
+		"tags": [
+			"Walk-up"
+		],
 		"hidden": false,
 		"schedule": {
 			"type": "weekly",
@@ -1239,14 +2036,24 @@
 				"monday": null,
 				"tuesday": null,
 				"wednesday": {
-					"open": { "hour": 10, "minute": 0 },
-					"close": { "hour": 11, "minute": 0 }
+					"open": {
+						"hour": 10,
+						"minute": 0
+					},
+					"close": {
+						"hour": 11,
+						"minute": 0
+					}
 				},
 				"thursday": null,
 				"friday": null,
 				"saturday": null,
 				"sunday": null
 			}
+		},
+		"coordinates": {
+			"lat": 32.635671,
+			"lng": -117.076899
 		}
 	},
 	{
@@ -1255,7 +2062,10 @@
 			"en": "Backcounty Communities Thriving",
 			"es": "Comunidades Prósperas del Interior"
 		},
-		"description": { "en": "", "es": "" },
+		"description": {
+			"en": "",
+			"es": ""
+		},
 		"address": "2007 Main St. Ste B",
 		"city": "Julian",
 		"state": "CA",
@@ -1268,34 +2078,70 @@
 		},
 		"closures": null,
 		"eligibility": null,
-		"tags": ["Walk-up"],
+		"tags": [
+			"Walk-up"
+		],
 		"hidden": false,
 		"schedule": {
 			"type": "weekly",
 			"schedule": {
 				"monday": {
-					"open": { "hour": 9, "minute": 30 },
-					"close": { "hour": 16, "minute": 30 }
+					"open": {
+						"hour": 9,
+						"minute": 30
+					},
+					"close": {
+						"hour": 16,
+						"minute": 30
+					}
 				},
 				"tuesday": {
-					"open": { "hour": 9, "minute": 30 },
-					"close": { "hour": 16, "minute": 30 }
+					"open": {
+						"hour": 9,
+						"minute": 30
+					},
+					"close": {
+						"hour": 16,
+						"minute": 30
+					}
 				},
 				"wednesday": {
-					"open": { "hour": 9, "minute": 30 },
-					"close": { "hour": 16, "minute": 30 }
+					"open": {
+						"hour": 9,
+						"minute": 30
+					},
+					"close": {
+						"hour": 16,
+						"minute": 30
+					}
 				},
 				"thursday": {
-					"open": { "hour": 9, "minute": 30 },
-					"close": { "hour": 16, "minute": 30 }
+					"open": {
+						"hour": 9,
+						"minute": 30
+					},
+					"close": {
+						"hour": 16,
+						"minute": 30
+					}
 				},
 				"friday": {
-					"open": { "hour": 9, "minute": 30 },
-					"close": { "hour": 16, "minute": 30 }
+					"open": {
+						"hour": 9,
+						"minute": 30
+					},
+					"close": {
+						"hour": 16,
+						"minute": 30
+					}
 				},
 				"saturday": null,
 				"sunday": null
 			}
+		},
+		"coordinates": {
+			"lat": 33.0787,
+			"lng": -116.6012
 		}
 	}
 ]

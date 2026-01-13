@@ -14,6 +14,7 @@ export default function FinderPage() {
 
 	const {
 		coordinates,
+		error: geoError,
 		isLoading: geoLoading,
 		permissionState,
 		requestPermission,
@@ -24,12 +25,16 @@ export default function FinderPage() {
 		userCoordinates: coordinates,
 	});
 
-	// Only show geo prompt if permission hasn't been decided yet
-	const shouldShowGeoPrompt = permissionState === "prompt" && !coordinates;
+	// Show geo prompt if permission not denied and no coordinates yet
+	const shouldShowGeoPrompt = permissionState !== "denied" && !coordinates;
 
 	// Geo prompt element for header
 	const geoPromptElement = shouldShowGeoPrompt ? (
-		<GeoPrompt onAllow={requestPermission} isLoading={geoLoading} />
+		<GeoPrompt
+			onAllow={requestPermission}
+			isLoading={geoLoading}
+			error={geoError}
+		/>
 	) : null;
 
 	return (
