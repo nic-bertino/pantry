@@ -7,10 +7,22 @@ import type { AvailabilityStatus } from "@/lib/types/location";
 
 interface StatusBadgeProps {
 	availability: AvailabilityStatus;
+	variant?: "badge" | "text";
 }
 
-export function StatusBadge({ availability }: StatusBadgeProps) {
+export function StatusBadge({
+	availability,
+	variant = "badge",
+}: StatusBadgeProps) {
 	const { t } = useTranslations();
+
+	// Text color classes for plain text variant
+	const textColors = {
+		open: "text-emerald-600 dark:text-emerald-400",
+		"opening-soon": "text-amber-600 dark:text-amber-400",
+		closed: "text-muted-foreground",
+		unknown: "text-muted-foreground",
+	};
 
 	switch (availability.status) {
 		case "open": {
@@ -18,17 +30,23 @@ export function StatusBadge({ availability }: StatusBadgeProps) {
 				hour: availability.closesAt.getHours(),
 				minute: availability.closesAt.getMinutes(),
 			});
-			return (
+			const label = t("openUntil", { time: closeTime });
+			return variant === "text" ? (
+				<span className={`text-sm ${textColors.open}`}>{label}</span>
+			) : (
 				<Badge className="bg-emerald-500/15 text-emerald-700 dark:text-emerald-400 border-emerald-500/20">
-					{t("openUntil", { time: closeTime })}
+					{label}
 				</Badge>
 			);
 		}
 
 		case "opening-soon": {
-			return (
+			const label = t("opensIn", { minutes: availability.minutesUntil });
+			return variant === "text" ? (
+				<span className={`text-sm ${textColors["opening-soon"]}`}>{label}</span>
+			) : (
 				<Badge className="bg-amber-500/15 text-amber-700 dark:text-amber-400 border-amber-500/20">
-					{t("opensIn", { minutes: availability.minutesUntil })}
+					{label}
 				</Badge>
 			);
 		}
@@ -62,15 +80,30 @@ export function StatusBadge({ availability }: StatusBadgeProps) {
 					})}`;
 				}
 
-				return (
-					<Badge variant="secondary">{t("opensAt", { time: timeLabel })}</Badge>
+				const label = t("opensAt", { time: timeLabel });
+				return variant === "text" ? (
+					<span className={`text-sm ${textColors.closed}`}>{label}</span>
+				) : (
+					<Badge variant="secondary">{label}</Badge>
 				);
 			}
-			return <Badge variant="secondary">{t("statusClosed")}</Badge>;
+			return variant === "text" ? (
+				<span className={`text-sm ${textColors.closed}`}>
+					{t("statusClosed")}
+				</span>
+			) : (
+				<Badge variant="secondary">{t("statusClosed")}</Badge>
+			);
 		}
 
 		case "unknown":
-			return <Badge variant="outline">{t("statusUnknown")}</Badge>;
+			return variant === "text" ? (
+				<span className={`text-sm ${textColors.unknown}`}>
+					{t("statusUnknown")}
+				</span>
+			) : (
+				<Badge variant="outline">{t("statusUnknown")}</Badge>
+			);
 
 		default:
 			return null;
