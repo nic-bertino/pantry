@@ -59,7 +59,7 @@ export function FilterChips({
 	}
 
 	return (
-		<div className="flex flex-wrap items-center gap-1.5">
+		<div className="flex items-center gap-1.5">
 			{/* Distance chips */}
 			{hasDistanceData && (
 				<>
@@ -71,7 +71,7 @@ export function FilterChips({
 								type="button"
 								onClick={() => onDistanceChange(isActive ? null : ring)}
 								className={cn(
-									"inline-flex items-center gap-1 px-2 py-1 text-xs font-medium rounded-full border transition-colors",
+									"inline-flex shrink-0 items-center gap-1 px-2 py-1 text-xs font-medium rounded-full border transition-colors whitespace-nowrap",
 									isActive
 										? "border-primary bg-primary text-primary-foreground"
 										: "border-border bg-background hover:bg-muted",
@@ -83,7 +83,7 @@ export function FilterChips({
 						);
 					})}
 					{showEligibility && (
-						<span className="text-border mx-1">|</span>
+						<span className="text-border mx-1 shrink-0">|</span>
 					)}
 				</>
 			)}
@@ -98,7 +98,7 @@ export function FilterChips({
 						)
 					}
 					className={cn(
-						"inline-flex items-center gap-1 px-2 py-1 text-xs font-medium rounded-full border transition-colors",
+						"inline-flex shrink-0 items-center gap-1 px-2 py-1 text-xs font-medium rounded-full border transition-colors whitespace-nowrap",
 						eligibilityFilter === "no-requirements"
 							? "border-primary bg-primary text-primary-foreground"
 							: "border-border bg-background hover:bg-muted",

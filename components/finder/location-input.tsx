@@ -81,23 +81,31 @@ export function LocationInput({
 
 	const showBrowserOption = permissionState !== "denied";
 
+	const hasLocation = !!coordinates;
+
 	return (
 		<PopoverPrimitive.Root open={open} onOpenChange={setOpen}>
 			<PopoverPrimitive.Trigger asChild>
-				<Button
-					variant="ghost"
-					size="sm"
-					className="gap-1.5 text-muted-foreground hover:text-foreground"
+				<button
+					type="button"
+					className="flex items-center gap-1.5 text-sm text-left hover:opacity-70 transition-opacity"
 				>
-					<MapPinIcon className="h-4 w-4" />
-					<span>{getTriggerLabel()}</span>
-					<ChevronDownIcon className="h-3 w-3 opacity-50" />
-				</Button>
+					<MapPinIcon className="h-4 w-4 text-muted-foreground shrink-0" />
+					<span className={hasLocation ? "text-foreground" : "text-muted-foreground"}>
+						{getTriggerLabel()}
+					</span>
+					{hasLocation && (
+						<span className="text-muted-foreground">· {t("change")}</span>
+					)}
+					{!hasLocation && (
+						<ChevronDownIcon className="h-3 w-3 text-muted-foreground" />
+					)}
+				</button>
 			</PopoverPrimitive.Trigger>
 
 			<PopoverPrimitive.Portal>
 				<PopoverPrimitive.Content
-					align="end"
+					align="start"
 					sideOffset={8}
 					className={cn(
 						"z-50 w-72 rounded-2xl bg-popover p-4 shadow-2xl ring-1 ring-foreground/5",

@@ -86,7 +86,8 @@
 		"useMyLocationDesc": "Get distances to nearby distributions",
 		"zipCode": "ZIP code",
 		"update": "Update",
-		"invalidZip": "Enter a valid ZIP code"
+		"invalidZip": "Enter a valid ZIP code",
+		"change": "Change"
 	},
 	"es": {
 		"appTitle": "Encuentra Comida Ahora",
@@ -175,6 +176,7 @@
 		"useMyLocationDesc": "Ver distancias a distribuciones cercanas",
 		"zipCode": "Código postal",
 		"update": "Actualizar",
-		"invalidZip": "Ingresa un código postal válido"
+		"invalidZip": "Ingresa un código postal válido",
+		"change": "Cambiar"
 	}
 }
