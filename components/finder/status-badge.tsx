@@ -10,6 +10,22 @@ interface StatusBadgeProps {
 	variant?: "badge" | "text";
 }
 
+/**
+ * Format relative time (e.g., "in 45m", "in 3h")
+ */
+function formatRelativeTime(minutes: number): string {
+	if (minutes < 60) return `in ${minutes}m`;
+	const hours = Math.floor(minutes / 60);
+	return `in ${hours}h`;
+}
+
+/**
+ * Check if a date is on the same calendar day as now
+ */
+function isSameDay(date: Date, now: Date): boolean {
+	return date.toDateString() === now.toDateString();
+}
+
 export function StatusBadge({
 	availability,
 	variant = "badge",
@@ -41,7 +57,8 @@ export function StatusBadge({
 		}
 
 		case "opening-soon": {
-			const label = t("opensIn", { minutes: availability.minutesUntil });
+			// Opening soon always uses relative time
+			const label = `${t("opens")} ${formatRelativeTime(availability.minutesUntil)}`;
 			return variant === "text" ? (
 				<span className={`text-sm ${textColors["opening-soon"]}`}>{label}</span>
 			) : (
@@ -53,34 +70,40 @@ export function StatusBadge({
 
 		case "closed": {
 			if (availability.opensAt) {
-				const isToday =
-					availability.opensAt.toDateString() === new Date().toDateString();
-				const isTomorrow =
-					availability.opensAt.toDateString() ===
-					new Date(Date.now() + 86400000).toDateString();
+				const now = new Date();
+				const opensAt = availability.opensAt;
+				const minutesUntil = Math.floor(
+					(opensAt.getTime() - now.getTime()) / (1000 * 60),
+				);
 
 				let timeLabel: string;
-				if (isToday) {
-					timeLabel = formatTime({
-						hour: availability.opensAt.getHours(),
-						minute: availability.opensAt.getMinutes(),
-					});
-				} else if (isTomorrow) {
-					timeLabel = `${t("tomorrow")} ${formatTime({
-						hour: availability.opensAt.getHours(),
-						minute: availability.opensAt.getMinutes(),
-					})}`;
+
+				// Use relative time if same calendar day, otherwise use absolute with day context
+				if (isSameDay(opensAt, now)) {
+					// Same day: use relative time (e.g., "Opens in 3h")
+					timeLabel = formatRelativeTime(minutesUntil);
 				} else {
-					const dayName = availability.opensAt.toLocaleDateString("en-US", {
-						weekday: "short",
+					// Different day: use absolute time with day context
+					const isTomorrow =
+						opensAt.toDateString() ===
+						new Date(Date.now() + 86400000).toDateString();
+
+					const time = formatTime({
+						hour: opensAt.getHours(),
+						minute: opensAt.getMinutes(),
 					});
-					timeLabel = `${dayName} ${formatTime({
-						hour: availability.opensAt.getHours(),
-						minute: availability.opensAt.getMinutes(),
-					})}`;
+
+					if (isTomorrow) {
+						timeLabel = `${t("tomorrow")} ${time}`;
+					} else {
+						const dayName = opensAt.toLocaleDateString("en-US", {
+							weekday: "short",
+						});
+						timeLabel = `${dayName} ${time}`;
+					}
 				}
 
-				const label = t("opensAt", { time: timeLabel });
+				const label = `${t("opens")} ${timeLabel}`;
 				return variant === "text" ? (
 					<span className={`text-sm ${textColors.closed}`}>{label}</span>
 				) : (

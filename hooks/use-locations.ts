@@ -111,20 +111,30 @@ export function useLocations({ filter, userCoordinates }: UseLocationsOptions) {
 		}
 	}, [displayLocations, filter, now]);
 
-	// Sort: open locations first, then by distance (if available), then alphabetically
+	// Sort by opening time: open now first, then by when they open next
 	const sortedLocations = useMemo(() => {
 		return [...filteredLocations].sort((a, b) => {
-			// Open locations first
-			const aOpen = a.availability.status === "open" ? 0 : 1;
-			const bOpen = b.availability.status === "open" ? 0 : 1;
-			if (aOpen !== bOpen) return aOpen - bOpen;
+			// Get opening time for sorting (0 = open now, otherwise minutes until open)
+			const getOpeningTime = (loc: DisplayLocation): number => {
+				if (loc.availability.status === "open") return 0;
+				if (loc.availability.status === "opening-soon") {
+					return loc.availability.minutesUntil;
+				}
+				if (loc.availability.status === "closed" && loc.availability.opensAt) {
+					return Math.floor(
+						(loc.availability.opensAt.getTime() - now.getTime()) / (1000 * 60),
+					);
+				}
+				return Number.MAX_SAFE_INTEGER; // Unknown status goes to end
+			};
 
-			// Opening soon second
-			const aOpeningSoon = a.availability.status === "opening-soon" ? 0 : 1;
-			const bOpeningSoon = b.availability.status === "opening-soon" ? 0 : 1;
-			if (aOpeningSoon !== bOpeningSoon) return aOpeningSoon - bOpeningSoon;
+			const aTime = getOpeningTime(a);
+			const bTime = getOpeningTime(b);
 
-			// Then by distance (if available)
+			// Sort by opening time first
+			if (aTime !== bTime) return aTime - bTime;
+
+			// Then by distance (if available and both are similar opening time)
 			if (a.distance !== undefined && b.distance !== undefined) {
 				return a.distance - b.distance;
 			}
@@ -132,7 +142,7 @@ export function useLocations({ filter, userCoordinates }: UseLocationsOptions) {
 			// Finally alphabetically
 			return a.name.en.localeCompare(b.name.en);
 		});
-	}, [filteredLocations]);
+	}, [filteredLocations, now]);
 
 	// Calculate counts for each filter
 	const counts = useMemo(() => {

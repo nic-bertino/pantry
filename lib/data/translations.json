@@ -87,7 +87,8 @@
 		"zipCode": "ZIP code",
 		"update": "Update",
 		"invalidZip": "Enter a valid ZIP code",
-		"change": "Change"
+		"change": "Change",
+		"opens": "Opens"
 	},
 	"es": {
 		"appTitle": "Encuentra Comida Ahora",
@@ -177,6 +178,7 @@
 		"zipCode": "Código postal",
 		"update": "Actualizar",
 		"invalidZip": "Ingresa un código postal válido",
-		"change": "Cambiar"
+		"change": "Cambiar",
+		"opens": "Abre"
 	}
 }

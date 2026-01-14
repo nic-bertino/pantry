@@ -49,7 +49,7 @@ export function LocationList({
 		<>
 			<div className="container mx-auto max-w-3xl px-4 py-4">
 				{geoPromptSlot && <div className="mb-3">{geoPromptSlot}</div>}
-				<div className="space-y-3 sm:space-y-0 sm:divide-y sm:divide-border">
+				<div className="space-y-3 sm:space-y-2">
 					{locations.map((location) => (
 						<LocationCard
 							key={location.id}
