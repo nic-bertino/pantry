@@ -2,6 +2,7 @@
 
 import { useState } from "react";
 import { useTranslations } from "@/lib/i18n/use-translations";
+import { Footer } from "@/components/finder/footer";
 import { Header } from "@/components/finder/header";
 import { LocationInput } from "@/components/finder/location-input";
 import { LocationList } from "@/components/finder/location-list";
@@ -67,6 +68,8 @@ export default function FinderPage() {
 					filter={filter}
 				/>
 			</main>
+
+			<Footer />
 		</div>
 	);
 }

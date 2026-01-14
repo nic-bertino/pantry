@@ -34,8 +34,8 @@ export function StatusBadge({
 
 	// Text color classes for plain text variant
 	const textColors = {
-		open: "text-emerald-600 dark:text-emerald-400",
-		"opening-soon": "text-amber-600 dark:text-amber-400",
+		open: "text-brand-green",
+		"opening-soon": "text-brand-green",
 		closed: "text-muted-foreground",
 		unknown: "text-muted-foreground",
 	};
@@ -50,7 +50,7 @@ export function StatusBadge({
 			return variant === "text" ? (
 				<span className={`text-sm ${textColors.open}`}>{label}</span>
 			) : (
-				<Badge className="bg-emerald-500/15 text-emerald-700 dark:text-emerald-400 border-emerald-500/20">
+				<Badge className="bg-primary/15 text-primary border-primary/20">
 					{label}
 				</Badge>
 			);
@@ -62,7 +62,7 @@ export function StatusBadge({
 			return variant === "text" ? (
 				<span className={`text-sm ${textColors["opening-soon"]}`}>{label}</span>
 			) : (
-				<Badge className="bg-amber-500/15 text-amber-700 dark:text-amber-400 border-amber-500/20">
+				<Badge className="bg-primary/15 text-primary border-primary/20">
 					{label}
 				</Badge>
 			);
