@@ -29,7 +29,7 @@ export function Header() {
 						aria-label="Home"
 					>
 						<Image
-							src="/pantry-app.png"
+							src="/pantry-app.svg"
 							alt=""
 							width={28}
 							height={28}

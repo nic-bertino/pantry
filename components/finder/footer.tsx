@@ -8,7 +8,7 @@ export function Footer() {
 			<div className="container mx-auto max-w-3xl px-4 py-6">
 				<div className="flex items-center justify-center gap-2 text-sm text-muted-foreground">
 					<Image
-						src="/pantry-app.png"
+						src="/pantry-app.svg"
 						alt=""
 						width={16}
 						height={16}

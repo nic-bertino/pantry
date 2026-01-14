@@ -25,7 +25,7 @@ export function EmptyState({ filter }: EmptyStateProps) {
 	return (
 		<div className="flex flex-col items-center justify-center py-16 text-center px-4">
 			<Image
-				src="/pantry-app.png"
+				src="/pantry-app.svg"
 				alt=""
 				width={48}
 				height={48}
