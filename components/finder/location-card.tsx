@@ -22,7 +22,7 @@ export function LocationCard({ location, onClick }: LocationCardProps) {
 			{/* Desktop: Clean row layout */}
 			<button
 				type="button"
-				className="hidden w-full text-left sm:block sm:py-3 sm:cursor-pointer sm:rounded-lg sm:-mx-2 sm:px-2 hover:bg-muted/50 transition-colors"
+				className="hidden w-full text-left sm:block sm:py-3 sm:cursor-pointer sm:rounded-lg sm:-mx-2 sm:px-2 hover:bg-muted transition-colors"
 				onClick={onClick}
 			>
 				<h3 className="font-medium truncate">{name}</h3>
@@ -37,7 +37,7 @@ export function LocationCard({ location, onClick }: LocationCardProps) {
 							· {t("milesAway", { miles: location.distance.toFixed(1) })}
 						</span>
 					)}
-					<span className="ml-2">
+					<span className="ml-2 group-hover:underline group-hover:decoration-muted-foreground/50 group-hover:underline-offset-4">
 						<StatusBadge
 							availability={location.availability}
 							timezone={location.timezone}
@@ -50,7 +50,7 @@ export function LocationCard({ location, onClick }: LocationCardProps) {
 			{/* Mobile: Card layout */}
 			<button
 				type="button"
-				className="sm:hidden w-full text-left rounded-lg border border-border bg-card p-4 active:bg-muted/50 transition-colors"
+				className="sm:hidden w-full text-left rounded-lg border border-border bg-card p-4 hover:bg-muted active:bg-muted transition-colors"
 				onClick={onClick}
 			>
 				<h3 className="font-medium leading-tight">{name}</h3>
@@ -65,7 +65,7 @@ export function LocationCard({ location, onClick }: LocationCardProps) {
 							· {t("milesAway", { miles: location.distance.toFixed(1) })}
 						</span>
 					)}
-					<span className="ml-2">
+					<span className="ml-2 group-hover:underline group-hover:decoration-muted-foreground/50 group-hover:underline-offset-4">
 						<StatusBadge
 							availability={location.availability}
 							timezone={location.timezone}
