@@ -9,6 +9,85 @@ import type {
 import { DAY_NAMES } from "@/lib/types/location";
 
 /**
+ * Time components in a specific timezone
+ */
+interface LocalTimeComponents {
+	hour: number;
+	minute: number;
+	dayOfWeek: DayOfWeek;
+	dayOfMonth: number;
+	month: number;
+	year: number;
+}
+
+/**
+ * Get current time components in a specific timezone using Intl API
+ */
+function getTimeInTimezone(date: Date, timezone: string): LocalTimeComponents {
+	const formatter = new Intl.DateTimeFormat("en-US", {
+		timeZone: timezone,
+		hour: "numeric",
+		minute: "numeric",
+		weekday: "short",
+		day: "numeric",
+		month: "numeric",
+		year: "numeric",
+		hour12: false,
+	});
+
+	const parts = formatter.formatToParts(date);
+	const getPart = (type: string) =>
+		parts.find((p) => p.type === type)?.value || "";
+
+	const hour = Number.parseInt(getPart("hour"), 10);
+	const minute = Number.parseInt(getPart("minute"), 10);
+	const dayOfMonth = Number.parseInt(getPart("day"), 10);
+	const month = Number.parseInt(getPart("month"), 10) - 1; // 0-indexed
+	const year = Number.parseInt(getPart("year"), 10);
+
+	// Map weekday string to DayOfWeek number
+	const weekdayMap: Record<string, DayOfWeek> = {
+		Sun: 0,
+		Mon: 1,
+		Tue: 2,
+		Wed: 3,
+		Thu: 4,
+		Fri: 5,
+		Sat: 6,
+	};
+	const dayOfWeek = weekdayMap[getPart("weekday")] ?? 0;
+
+	return { hour, minute, dayOfWeek, dayOfMonth, month, year };
+}
+
+/**
+ * Create a Date object representing a specific local time in a timezone.
+ * Returns a Date that, when displayed in the given timezone, shows the specified time.
+ */
+function createDateInTimezone(
+	year: number,
+	month: number,
+	day: number,
+	hour: number,
+	minute: number,
+	timezone: string,
+): Date {
+	// Create an initial guess date in local time
+	const localGuess = new Date(year, month, day, hour, minute, 0, 0);
+
+	// Get what time it would be in the target timezone at this UTC instant
+	const targetTime = getTimeInTimezone(localGuess, timezone);
+
+	// Calculate the difference between what we want and what we got
+	const wantedMinutes = hour * 60 + minute;
+	const gotMinutes = targetTime.hour * 60 + targetTime.minute;
+	const diffMinutes = wantedMinutes - gotMinutes;
+
+	// Adjust by the difference
+	return new Date(localGuess.getTime() + diffMinutes * 60 * 1000);
+}
+
+/**
  * Get the nth occurrence of a weekday in a given month
  * e.g., getNthWeekdayOfMonth(2024, 0, 3, 1) = 1st Wednesday of January 2024
  */
@@ -58,24 +137,24 @@ function isTimeInRange(
 function calculateWeeklyAvailability(
 	schedule: WeeklySchedule,
 	now: Date,
+	timezone: string,
 ): AvailabilityStatus {
-	const dayOfWeek = now.getDay();
-	const dayName = DAY_NAMES[dayOfWeek];
+	const localTime = getTimeInTimezone(now, timezone);
+	const dayName = DAY_NAMES[localTime.dayOfWeek];
 	const todaySchedule = schedule[dayName];
-	const currentHour = now.getHours();
-	const currentMinute = now.getMinutes();
 
 	// Check if open right now
 	if (
 		todaySchedule &&
-		isTimeInRange(currentHour, currentMinute, todaySchedule)
+		isTimeInRange(localTime.hour, localTime.minute, todaySchedule)
 	) {
-		const closesAt = new Date(now);
-		closesAt.setHours(
+		const closesAt = createDateInTimezone(
+			localTime.year,
+			localTime.month,
+			localTime.dayOfMonth,
 			todaySchedule.close.hour,
 			todaySchedule.close.minute,
-			0,
-			0,
+			timezone,
 		);
 		return { status: "open", closesAt };
 	}
@@ -84,16 +163,17 @@ function calculateWeeklyAvailability(
 	if (todaySchedule) {
 		const openMinutes =
 			todaySchedule.open.hour * 60 + todaySchedule.open.minute;
-		const currentMinutes = currentHour * 60 + currentMinute;
+		const currentMinutes = localTime.hour * 60 + localTime.minute;
 		const minutesUntilOpen = openMinutes - currentMinutes;
 
 		if (minutesUntilOpen > 0 && minutesUntilOpen <= 30) {
-			const opensAt = new Date(now);
-			opensAt.setHours(
+			const opensAt = createDateInTimezone(
+				localTime.year,
+				localTime.month,
+				localTime.dayOfMonth,
 				todaySchedule.open.hour,
 				todaySchedule.open.minute,
-				0,
-				0,
+				timezone,
 			);
 			return {
 				status: "opening-soon",
@@ -104,7 +184,7 @@ function calculateWeeklyAvailability(
 	}
 
 	// Find next opening time
-	const opensAt = findNextWeeklyOpening(schedule, now);
+	const opensAt = findNextWeeklyOpening(schedule, now, timezone);
 	return { status: "closed", opensAt };
 }
 
@@ -114,39 +194,47 @@ function calculateWeeklyAvailability(
 function findNextWeeklyOpening(
 	schedule: WeeklySchedule,
 	now: Date,
+	timezone: string,
 ): Date | null {
-	const currentDay = now.getDay();
-	const currentHour = now.getHours();
-	const currentMinute = now.getMinutes();
+	const localTime = getTimeInTimezone(now, timezone);
+	const currentDay = localTime.dayOfWeek;
 
 	// Check remaining time today and next 7 days
 	for (let offset = 0; offset < 7; offset++) {
-		const checkDay = (currentDay + offset) % 7;
+		const checkDay = ((currentDay + offset) % 7) as DayOfWeek;
 		const dayName = DAY_NAMES[checkDay];
 		const daySchedule = schedule[dayName];
 
 		if (daySchedule) {
+			// Calculate the date for this offset
+			const targetDate = new Date(now.getTime() + offset * 24 * 60 * 60 * 1000);
+			const targetLocal = getTimeInTimezone(targetDate, timezone);
+
 			// If today, check if we haven't passed the opening time
 			if (offset === 0) {
 				const openMinutes =
 					daySchedule.open.hour * 60 + daySchedule.open.minute;
-				const currentMinutes = currentHour * 60 + currentMinute;
+				const currentMinutes = localTime.hour * 60 + localTime.minute;
 				if (openMinutes > currentMinutes) {
-					const opensAt = new Date(now);
-					opensAt.setHours(
+					return createDateInTimezone(
+						localTime.year,
+						localTime.month,
+						localTime.dayOfMonth,
 						daySchedule.open.hour,
 						daySchedule.open.minute,
-						0,
-						0,
+						timezone,
 					);
-					return opensAt;
 				}
 			} else {
 				// Future day
-				const opensAt = new Date(now);
-				opensAt.setDate(opensAt.getDate() + offset);
-				opensAt.setHours(daySchedule.open.hour, daySchedule.open.minute, 0, 0);
-				return opensAt;
+				return createDateInTimezone(
+					targetLocal.year,
+					targetLocal.month,
+					targetLocal.dayOfMonth,
+					daySchedule.open.hour,
+					daySchedule.open.minute,
+					timezone,
+				);
 			}
 		}
 	}
@@ -160,25 +248,27 @@ function findNextWeeklyOpening(
 function calculateSpecialAvailability(
 	pattern: SpecialPattern,
 	now: Date,
+	timezone: string,
 ): AvailabilityStatus {
-	const currentHour = now.getHours();
-	const currentMinute = now.getMinutes();
+	const localTime = getTimeInTimezone(now, timezone);
 
 	// Check if today is one of the special days and we're in the time range
-	const today = now.getDate();
-	const month = now.getMonth();
-	const year = now.getFullYear();
-
 	for (const nth of pattern.occurrences) {
-		const specialDate = getNthWeekdayOfMonth(year, month, pattern.weekday, nth);
-		if (specialDate && specialDate.getDate() === today) {
-			if (isTimeInRange(currentHour, currentMinute, pattern.timeRange)) {
-				const closesAt = new Date(now);
-				closesAt.setHours(
+		const specialDate = getNthWeekdayOfMonth(
+			localTime.year,
+			localTime.month,
+			pattern.weekday,
+			nth,
+		);
+		if (specialDate && specialDate.getDate() === localTime.dayOfMonth) {
+			if (isTimeInRange(localTime.hour, localTime.minute, pattern.timeRange)) {
+				const closesAt = createDateInTimezone(
+					localTime.year,
+					localTime.month,
+					localTime.dayOfMonth,
 					pattern.timeRange.close.hour,
 					pattern.timeRange.close.minute,
-					0,
-					0,
+					timezone,
 				);
 				return { status: "open", closesAt };
 			}
@@ -186,16 +276,17 @@ function calculateSpecialAvailability(
 			// Check if opening soon
 			const openMinutes =
 				pattern.timeRange.open.hour * 60 + pattern.timeRange.open.minute;
-			const currentMinutes = currentHour * 60 + currentMinute;
+			const currentMinutes = localTime.hour * 60 + localTime.minute;
 			const minutesUntilOpen = openMinutes - currentMinutes;
 
 			if (minutesUntilOpen > 0 && minutesUntilOpen <= 30) {
-				const opensAt = new Date(now);
-				opensAt.setHours(
+				const opensAt = createDateInTimezone(
+					localTime.year,
+					localTime.month,
+					localTime.dayOfMonth,
 					pattern.timeRange.open.hour,
 					pattern.timeRange.open.minute,
-					0,
-					0,
+					timezone,
 				);
 				return {
 					status: "opening-soon",
@@ -207,7 +298,7 @@ function calculateSpecialAvailability(
 	}
 
 	// Find next special date
-	const opensAt = findNextSpecialOpening(pattern, now);
+	const opensAt = findNextSpecialOpening(pattern, now, timezone);
 	return { status: "closed", opensAt };
 }
 
@@ -217,12 +308,10 @@ function calculateSpecialAvailability(
 function findNextSpecialOpening(
 	pattern: SpecialPattern,
 	now: Date,
+	timezone: string,
 ): Date | null {
-	const year = now.getFullYear();
-	const month = now.getMonth();
-	const today = now.getDate();
-	const currentHour = now.getHours();
-	const currentMinute = now.getMinutes();
+	const localTime = getTimeInTimezone(now, timezone);
+	const { year, month, dayOfMonth } = localTime;
 
 	// Check this month and next month
 	for (let monthOffset = 0; monthOffset < 2; monthOffset++) {
@@ -238,41 +327,44 @@ function findNextSpecialOpening(
 			);
 			if (!specialDate) continue;
 
+			const specialDay = specialDate.getDate();
+			const specialMonth = specialDate.getMonth();
+			const specialYear = specialDate.getFullYear();
+
 			// Check if this date is in the future
 			if (
-				specialDate.getFullYear() > year ||
-				(specialDate.getFullYear() === year &&
-					specialDate.getMonth() > month) ||
-				(specialDate.getFullYear() === year &&
-					specialDate.getMonth() === month &&
-					specialDate.getDate() > today)
+				specialYear > year ||
+				(specialYear === year && specialMonth > month) ||
+				(specialYear === year && specialMonth === month && specialDay > dayOfMonth)
 			) {
-				specialDate.setHours(
+				return createDateInTimezone(
+					specialYear,
+					specialMonth,
+					specialDay,
 					pattern.timeRange.open.hour,
 					pattern.timeRange.open.minute,
-					0,
-					0,
+					timezone,
 				);
-				return specialDate;
 			}
 
 			// If today, check if opening time hasn't passed
 			if (
-				specialDate.getFullYear() === year &&
-				specialDate.getMonth() === month &&
-				specialDate.getDate() === today
+				specialYear === year &&
+				specialMonth === month &&
+				specialDay === dayOfMonth
 			) {
 				const openMinutes =
 					pattern.timeRange.open.hour * 60 + pattern.timeRange.open.minute;
-				const currentMinutes = currentHour * 60 + currentMinute;
+				const currentMinutes = localTime.hour * 60 + localTime.minute;
 				if (openMinutes > currentMinutes) {
-					specialDate.setHours(
+					return createDateInTimezone(
+						specialYear,
+						specialMonth,
+						specialDay,
 						pattern.timeRange.open.hour,
 						pattern.timeRange.open.minute,
-						0,
-						0,
+						timezone,
 					);
-					return specialDate;
 				}
 			}
 		}
@@ -287,12 +379,13 @@ function findNextSpecialOpening(
 export function calculateAvailability(
 	schedule: SchedulePattern,
 	now: Date = new Date(),
+	timezone = "America/Los_Angeles",
 ): AvailabilityStatus {
 	switch (schedule.type) {
 		case "weekly":
-			return calculateWeeklyAvailability(schedule.schedule, now);
+			return calculateWeeklyAvailability(schedule.schedule, now, timezone);
 		case "special":
-			return calculateSpecialAvailability(schedule.pattern, now);
+			return calculateSpecialAvailability(schedule.pattern, now, timezone);
 		case "unknown":
 			return { status: "unknown" };
 	}
@@ -301,8 +394,13 @@ export function calculateAvailability(
 /**
  * Check if a location is open during a specific day
  */
-export function isOpenOnDay(schedule: SchedulePattern, date: Date): boolean {
-	const dayOfWeek = date.getDay() as DayOfWeek;
+export function isOpenOnDay(
+	schedule: SchedulePattern,
+	date: Date,
+	timezone = "America/Los_Angeles",
+): boolean {
+	const localTime = getTimeInTimezone(date, timezone);
+	const dayOfWeek = localTime.dayOfWeek;
 
 	switch (schedule.type) {
 		case "weekly": {
@@ -311,18 +409,15 @@ export function isOpenOnDay(schedule: SchedulePattern, date: Date): boolean {
 		}
 		case "special": {
 			if (schedule.pattern.weekday !== dayOfWeek) return false;
-			const month = date.getMonth();
-			const year = date.getFullYear();
-			const dayOfMonth = date.getDate();
 
 			for (const nth of schedule.pattern.occurrences) {
 				const specialDate = getNthWeekdayOfMonth(
-					year,
-					month,
+					localTime.year,
+					localTime.month,
 					schedule.pattern.weekday,
 					nth,
 				);
-				if (specialDate && specialDate.getDate() === dayOfMonth) {
+				if (specialDate && specialDate.getDate() === localTime.dayOfMonth) {
 					return true;
 				}
 			}
@@ -340,10 +435,11 @@ export function isOpenInRange(
 	schedule: SchedulePattern,
 	startDate: Date,
 	endDate: Date,
+	timezone = "America/Los_Angeles",
 ): boolean {
 	const current = new Date(startDate);
 	while (current <= endDate) {
-		if (isOpenOnDay(schedule, current)) return true;
+		if (isOpenOnDay(schedule, current, timezone)) return true;
 		current.setDate(current.getDate() + 1);
 	}
 	return false;
@@ -355,32 +451,41 @@ export function isOpenInRange(
 export function isOpenNow(
 	schedule: SchedulePattern,
 	now: Date = new Date(),
+	timezone = "America/Los_Angeles",
 ): boolean {
-	const status = calculateAvailability(schedule, now);
+	const status = calculateAvailability(schedule, now, timezone);
 	return status.status === "open";
 }
 
 export function isOpenToday(
 	schedule: SchedulePattern,
 	now: Date = new Date(),
+	timezone = "America/Los_Angeles",
 ): boolean {
-	return isOpenOnDay(schedule, now);
+	return isOpenOnDay(schedule, now, timezone);
 }
 
 export function isOpenTomorrow(
 	schedule: SchedulePattern,
 	now: Date = new Date(),
+	timezone = "America/Los_Angeles",
 ): boolean {
 	const tomorrow = new Date(now);
 	tomorrow.setDate(tomorrow.getDate() + 1);
-	return isOpenOnDay(schedule, tomorrow);
+	return isOpenOnDay(schedule, tomorrow, timezone);
 }
 
 export function isOpenThisWeek(
 	schedule: SchedulePattern,
 	now: Date = new Date(),
+	timezone = "America/Los_Angeles",
 ): boolean {
 	const endOfWeek = new Date(now);
 	endOfWeek.setDate(endOfWeek.getDate() + 7);
-	return isOpenInRange(schedule, now, endOfWeek);
+	return isOpenInRange(schedule, now, endOfWeek, timezone);
 }
+
+/**
+ * Export timezone helper for use in display components
+ */
+export { getTimeInTimezone };

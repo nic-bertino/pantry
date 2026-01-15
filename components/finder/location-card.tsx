@@ -38,7 +38,11 @@ export function LocationCard({ location, onClick }: LocationCardProps) {
 						</span>
 					)}
 					<span className="ml-2">
-						<StatusBadge availability={location.availability} variant="text" />
+						<StatusBadge
+							availability={location.availability}
+							timezone={location.timezone}
+							variant="text"
+						/>
 					</span>
 				</p>
 			</button>
@@ -62,7 +66,11 @@ export function LocationCard({ location, onClick }: LocationCardProps) {
 						</span>
 					)}
 					<span className="ml-2">
-						<StatusBadge availability={location.availability} variant="text" />
+						<StatusBadge
+							availability={location.availability}
+							timezone={location.timezone}
+							variant="text"
+						/>
 					</span>
 				</p>
 			</button>
