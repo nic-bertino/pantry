@@ -19,6 +19,7 @@
         "city",
         "state",
         "postcode",
+        "timezone",
         "rawScheduleText",
         "tags",
         "hidden",
@@ -61,6 +62,11 @@
           "description": "ZIP/postal code.",
           "pattern": "^[0-9]{5}(-[0-9]{4})?$",
           "examples": ["92121", "91910"]
+        },
+        "timezone": {
+          "type": "string",
+          "description": "IANA timezone identifier for the location. Used to correctly calculate open/closed status regardless of user's timezone.",
+          "examples": ["America/Los_Angeles", "America/Denver", "America/Chicago", "America/New_York"]
         },
         "phone": {
           "type": ["string", "null"],

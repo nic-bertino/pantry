@@ -47,7 +47,10 @@ export function LocationDetailSheet({
 						<SheetTitle className="text-xl font-semibold leading-tight">
 							{name}
 						</SheetTitle>
-						<StatusBadge availability={location.availability} />
+						<StatusBadge
+							availability={location.availability}
+							timezone={location.timezone}
+						/>
 					</div>
 					<SheetDescription className="text-base text-muted-foreground">
 						{location.city}

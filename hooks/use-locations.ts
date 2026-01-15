@@ -58,7 +58,7 @@ export function useLocations({ filter, userCoordinates }: UseLocationsOptions) {
 
 		// Calculate availability and add to each location
 		const withAvailability: DisplayLocation[] = visibleLocations.map((loc) => {
-			const availability = calculateAvailability(loc.schedule, now);
+			const availability = calculateAvailability(loc.schedule, now, loc.timezone);
 
 			// Calculate distance if user coordinates available
 			let distance: number | undefined;
@@ -98,16 +98,20 @@ export function useLocations({ filter, userCoordinates }: UseLocationsOptions) {
 	const filteredLocations = useMemo(() => {
 		switch (filter) {
 			case "open-now":
-				return displayLocations.filter((loc) => isOpenNow(loc.schedule, now));
+				return displayLocations.filter((loc) =>
+					isOpenNow(loc.schedule, now, loc.timezone),
+				);
 			case "today":
-				return displayLocations.filter((loc) => isOpenToday(loc.schedule, now));
+				return displayLocations.filter((loc) =>
+					isOpenToday(loc.schedule, now, loc.timezone),
+				);
 			case "tomorrow":
 				return displayLocations.filter((loc) =>
-					isOpenTomorrow(loc.schedule, now),
+					isOpenTomorrow(loc.schedule, now, loc.timezone),
 				);
 			case "this-week":
 				return displayLocations.filter((loc) =>
-					isOpenThisWeek(loc.schedule, now),
+					isOpenThisWeek(loc.schedule, now, loc.timezone),
 				);
 			default:
 				return displayLocations;
@@ -150,15 +154,17 @@ export function useLocations({ filter, userCoordinates }: UseLocationsOptions) {
 	// Calculate counts for each filter
 	const counts = useMemo(() => {
 		return {
-			"open-now": displayLocations.filter((loc) => isOpenNow(loc.schedule, now))
-				.length,
-			today: displayLocations.filter((loc) => isOpenToday(loc.schedule, now))
-				.length,
+			"open-now": displayLocations.filter((loc) =>
+				isOpenNow(loc.schedule, now, loc.timezone),
+			).length,
+			today: displayLocations.filter((loc) =>
+				isOpenToday(loc.schedule, now, loc.timezone),
+			).length,
 			tomorrow: displayLocations.filter((loc) =>
-				isOpenTomorrow(loc.schedule, now),
+				isOpenTomorrow(loc.schedule, now, loc.timezone),
 			).length,
 			"this-week": displayLocations.filter((loc) =>
-				isOpenThisWeek(loc.schedule, now),
+				isOpenThisWeek(loc.schedule, now, loc.timezone),
 			).length,
 		};
 	}, [displayLocations, now]);

@@ -208,3 +208,31 @@ export function formatTime(time: { hour: number; minute: number }): string {
 export function formatTimeRange(range: TimeRange): string {
 	return `${formatTime(range.open)} - ${formatTime(range.close)}`;
 }
+
+/**
+ * Get short timezone abbreviation (PT, MT, CT, ET, etc.)
+ */
+export function getTimezoneAbbreviation(timezone: string): string {
+	const formatter = new Intl.DateTimeFormat("en-US", {
+		timeZone: timezone,
+		timeZoneName: "short",
+	});
+	const parts = formatter.formatToParts(new Date());
+	const tzPart = parts.find((p) => p.type === "timeZoneName");
+	return tzPart?.value || "";
+}
+
+/**
+ * Format time for display with timezone indicator
+ */
+export function formatTimeWithTimezone(
+	time: { hour: number; minute: number },
+	timezone: string,
+): string {
+	const hour12 = time.hour % 12 || 12;
+	const period = time.hour < 12 ? "AM" : "PM";
+	const minutes =
+		time.minute > 0 ? `:${time.minute.toString().padStart(2, "0")}` : "";
+	const tzAbbr = getTimezoneAbbreviation(timezone);
+	return `${hour12}${minutes} ${period} ${tzAbbr}`;
+}

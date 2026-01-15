@@ -13,6 +13,7 @@
 		"city": "Anytown",
 		"state": "CA",
 		"postcode": "90210",
+		"timezone": "America/Los_Angeles",
 		"phone": "555-123-4567",
 		"website": "https://example.org/food-bank",
 		"rawScheduleText": {
@@ -69,6 +70,7 @@
 		"city": "Anytown",
 		"state": "CA",
 		"postcode": "90211",
+		"timezone": "America/Los_Angeles",
 		"phone": null,
 		"website": null,
 		"rawScheduleText": {
@@ -112,6 +114,7 @@
 		"city": "Anytown",
 		"state": "CA",
 		"postcode": "90212",
+		"timezone": "America/Los_Angeles",
 		"phone": "555-987-6543",
 		"website": null,
 		"rawScheduleText": {
@@ -162,6 +165,7 @@
 		"city": "Anytown",
 		"state": "CA",
 		"postcode": "90213",
+		"timezone": "America/Los_Angeles",
 		"phone": "555-456-7890",
 		"website": "https://example.org/seniors",
 		"rawScheduleText": {

@@ -2,11 +2,13 @@
 
 import { Badge } from "@/components/ui/badge";
 import { useTranslations } from "@/lib/i18n/use-translations";
-import { formatTime } from "@/lib/schedule/parser";
+import { formatTimeWithTimezone } from "@/lib/schedule/parser";
+import { getTimeInTimezone } from "@/lib/schedule/calculator";
 import type { AvailabilityStatus } from "@/lib/types/location";
 
 interface StatusBadgeProps {
 	availability: AvailabilityStatus;
+	timezone: string;
 	variant?: "badge" | "text";
 }
 
@@ -19,15 +21,9 @@ function formatRelativeTime(minutes: number): string {
 	return `in ${hours}h`;
 }
 
-/**
- * Check if a date is on the same calendar day as now
- */
-function isSameDay(date: Date, now: Date): boolean {
-	return date.toDateString() === now.toDateString();
-}
-
 export function StatusBadge({
 	availability,
+	timezone,
 	variant = "badge",
 }: StatusBadgeProps) {
 	const { t } = useTranslations();
@@ -42,10 +38,12 @@ export function StatusBadge({
 
 	switch (availability.status) {
 		case "open": {
-			const closeTime = formatTime({
-				hour: availability.closesAt.getHours(),
-				minute: availability.closesAt.getMinutes(),
-			});
+			// Get closing time in the location's timezone
+			const localClose = getTimeInTimezone(availability.closesAt, timezone);
+			const closeTime = formatTimeWithTimezone(
+				{ hour: localClose.hour, minute: localClose.minute },
+				timezone,
+			);
 			const label = t("openUntil", { time: closeTime });
 			return variant === "text" ? (
 				<span className={`text-sm ${textColors.open}`}>{label}</span>
@@ -76,29 +74,44 @@ export function StatusBadge({
 					(opensAt.getTime() - now.getTime()) / (1000 * 60),
 				);
 
+				// Get times in the location's timezone for comparison
+				const nowLocal = getTimeInTimezone(now, timezone);
+				const opensLocal = getTimeInTimezone(opensAt, timezone);
+
 				let timeLabel: string;
 
-				// Use relative time if same calendar day, otherwise use absolute with day context
-				if (isSameDay(opensAt, now)) {
+				// Use relative time if same calendar day in the location's timezone
+				const isSameDayInTz =
+					nowLocal.year === opensLocal.year &&
+					nowLocal.month === opensLocal.month &&
+					nowLocal.dayOfMonth === opensLocal.dayOfMonth;
+
+				if (isSameDayInTz) {
 					// Same day: use relative time (e.g., "Opens in 3h")
 					timeLabel = formatRelativeTime(minutesUntil);
 				} else {
 					// Different day: use absolute time with day context
-					const isTomorrow =
-						opensAt.toDateString() ===
-						new Date(Date.now() + 86400000).toDateString();
+					const tomorrow = new Date(now.getTime() + 86400000);
+					const tomorrowLocal = getTimeInTimezone(tomorrow, timezone);
+					const isTomorrowInTz =
+						tomorrowLocal.year === opensLocal.year &&
+						tomorrowLocal.month === opensLocal.month &&
+						tomorrowLocal.dayOfMonth === opensLocal.dayOfMonth;
 
-					const time = formatTime({
-						hour: opensAt.getHours(),
-						minute: opensAt.getMinutes(),
-					});
+					const time = formatTimeWithTimezone(
+						{ hour: opensLocal.hour, minute: opensLocal.minute },
+						timezone,
+					);
 
-					if (isTomorrow) {
+					if (isTomorrowInTz) {
 						timeLabel = `${t("tomorrow")} ${time}`;
 					} else {
-						const dayName = opensAt.toLocaleDateString("en-US", {
+						// Get weekday name in the location's timezone
+						const dayFormatter = new Intl.DateTimeFormat("en-US", {
+							timeZone: timezone,
 							weekday: "short",
 						});
+						const dayName = dayFormatter.format(opensAt);
 						timeLabel = `${dayName} ${time}`;
 					}
 				}

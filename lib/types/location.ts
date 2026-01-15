@@ -65,6 +65,7 @@ export interface FoodLocation {
 	city: string;
 	state: string;
 	postcode: string;
+	timezone: string; // IANA timezone ID, e.g., "America/Los_Angeles"
 	coordinates?: { lat: number; lng: number };
 	phone: string | null;
 	website: string | null;
