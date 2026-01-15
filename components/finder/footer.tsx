@@ -17,7 +17,7 @@ export function Footer() {
 					<span>
 						Powered by{" "}
 						<a
-							href="https://github.com/nicbertino/pantry"
+							href="https://github.com/nic-bertino/pantry"
 							target="_blank"
 							rel="noopener noreferrer"
 							className="underline underline-offset-2 hover:text-foreground transition-colors"
