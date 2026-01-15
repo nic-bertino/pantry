@@ -1,8 +1,8 @@
-# Find Food Now
+# Pantry
 
-A fast, mobile-first web app to help people find free food distribution
-locations. Available in English and Spanish. Currently limited to San Diego
-County.
+A mobile-first web app to help people find free food distribution locations.
+Bilingual (English/Spanish) with real-time availability and distance-based
+sorting.
 
 ## Features
 
@@ -36,9 +36,16 @@ bun run build    # Production build
 bun run lint     # Run ESLint
 ```
 
+## Tech Stack
+
+- Next.js 16
+- React 19
+- Tailwind CSS 4
+- TypeScript
+
 ## Data
 
-Location data is stored in `lib/data/locations.json`. Each location includes:
+Location data is fetched at build time. Each location includes:
 
 - Name (bilingual)
 - Address and coordinates
