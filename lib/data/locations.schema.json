@@ -1,0 +1,284 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://github.com/nicbertino/pantry/locations.schema.json",
+  "title": "Pantry Locations",
+  "description": "Schema for food distribution locations used by the Pantry application. This defines the data format expected for food banks, pantries, and distribution sites.",
+  "type": "array",
+  "items": {
+    "$ref": "#/$defs/Location"
+  },
+  "$defs": {
+    "Location": {
+      "type": "object",
+      "description": "A food distribution location (pantry, food bank, church distribution, etc.)",
+      "required": [
+        "id",
+        "name",
+        "description",
+        "address",
+        "city",
+        "state",
+        "postcode",
+        "rawScheduleText",
+        "tags",
+        "hidden",
+        "schedule",
+        "coordinates"
+      ],
+      "properties": {
+        "id": {
+          "type": "string",
+          "description": "Unique identifier for the location. Use lowercase kebab-case (e.g., 'salvation-army-el-cajon'). This is used in URLs and as a stable reference.",
+          "pattern": "^[a-z0-9]+(-[a-z0-9]+)*$",
+          "examples": ["feeding-san-diego-marketplace", "rock-church-city-heights"]
+        },
+        "name": {
+          "$ref": "#/$defs/LocalizedText",
+          "description": "The display name of the location in supported languages."
+        },
+        "description": {
+          "$ref": "#/$defs/LocalizedText",
+          "description": "Additional details about the location (e.g., 'Please bring your own bags', 'Parking lot West of AMC theaters'). Can be empty strings if no special notes."
+        },
+        "address": {
+          "type": "string",
+          "description": "Street address (do not include city, state, or postal code).",
+          "examples": ["9477 Waples St Ste 100", "414 S. 31st St."]
+        },
+        "city": {
+          "type": "string",
+          "description": "City name.",
+          "examples": ["San Diego", "Chula Vista", "Oceanside"]
+        },
+        "state": {
+          "type": "string",
+          "description": "Two-letter state abbreviation.",
+          "pattern": "^[A-Z]{2}$",
+          "examples": ["CA"]
+        },
+        "postcode": {
+          "type": "string",
+          "description": "ZIP/postal code.",
+          "pattern": "^[0-9]{5}(-[0-9]{4})?$",
+          "examples": ["92121", "91910"]
+        },
+        "phone": {
+          "type": ["string", "null"],
+          "description": "Contact phone number. Use format '619-123-4567' or null if unavailable.",
+          "examples": ["619-298-9978", "858-768-7424", null]
+        },
+        "website": {
+          "type": ["string", "null"],
+          "description": "Website URL for more information, or null if unavailable.",
+          "format": "uri",
+          "examples": ["https://www.fallbrookfoodpantry.org/need-food.html", null]
+        },
+        "rawScheduleText": {
+          "$ref": "#/$defs/LocalizedText",
+          "description": "Human-readable schedule description shown to users. This is displayed as-is, so make it clear and concise.",
+          "examples": [
+            { "en": "Weekly Mon-Fri 9am-12pm", "es": "Semanal Lun-Vie 9am-12pm" },
+            { "en": "2nd and 4th Wednesday of the month from 12:00 - 2:00 p.m.", "es": "2do y 4to miércoles del mes de 12:00 - 2:00 p.m." }
+          ]
+        },
+        "closures": {
+          "type": ["array", "null"],
+          "description": "Temporary closures or holiday dates. Use null if no closures. (Future feature - format TBD)",
+          "items": {
+            "type": "object"
+          }
+        },
+        "eligibility": {
+          "oneOf": [
+            { "$ref": "#/$defs/LocalizedText" },
+            { "type": "null" }
+          ],
+          "description": "Requirements or restrictions for receiving food (e.g., 'Santee Residents ONLY', 'Military card required'). Use null if open to everyone.",
+          "examples": [
+            { "en": "Santee Residents ONLY. Requires utilities bill, proof of income, and ID.", "es": "SOLO residentes de Santee. Requiere recibo de servicios, comprobante de ingresos e identificación." },
+            null
+          ]
+        },
+        "tags": {
+          "type": "array",
+          "description": "Service type tags describing how food is distributed.",
+          "items": {
+            "type": "string",
+            "enum": ["Drive-through", "Walk-up"]
+          },
+          "minItems": 1,
+          "uniqueItems": true,
+          "examples": [["Walk-up"], ["Drive-through", "Walk-up"]]
+        },
+        "hidden": {
+          "type": "boolean",
+          "description": "Set to true to hide this location from the public listing. Useful for temporarily inactive locations or data that needs review.",
+          "default": false
+        },
+        "schedule": {
+          "oneOf": [
+            { "$ref": "#/$defs/WeeklySchedule" },
+            { "$ref": "#/$defs/SpecialSchedule" }
+          ],
+          "description": "Machine-readable schedule used to calculate 'Open Now' and 'Open Today' status."
+        },
+        "coordinates": {
+          "$ref": "#/$defs/Coordinates",
+          "description": "Geographic coordinates for mapping and distance calculations."
+        }
+      },
+      "additionalProperties": false
+    },
+    "LocalizedText": {
+      "type": "object",
+      "description": "Text content provided in multiple languages. Currently supports English (en) and Spanish (es).",
+      "required": ["en", "es"],
+      "properties": {
+        "en": {
+          "type": "string",
+          "description": "English text"
+        },
+        "es": {
+          "type": "string",
+          "description": "Spanish text"
+        }
+      },
+      "additionalProperties": false
+    },
+    "WeeklySchedule": {
+      "type": "object",
+      "description": "A regular weekly schedule where the location is open on the same days/times each week.",
+      "required": ["type", "schedule"],
+      "properties": {
+        "type": {
+          "const": "weekly",
+          "description": "Indicates this is a regular weekly schedule."
+        },
+        "schedule": {
+          "type": "object",
+          "description": "Hours for each day of the week. Use null for days when closed.",
+          "required": ["monday", "tuesday", "wednesday", "thursday", "friday", "saturday", "sunday"],
+          "properties": {
+            "monday": { "$ref": "#/$defs/DaySchedule" },
+            "tuesday": { "$ref": "#/$defs/DaySchedule" },
+            "wednesday": { "$ref": "#/$defs/DaySchedule" },
+            "thursday": { "$ref": "#/$defs/DaySchedule" },
+            "friday": { "$ref": "#/$defs/DaySchedule" },
+            "saturday": { "$ref": "#/$defs/DaySchedule" },
+            "sunday": { "$ref": "#/$defs/DaySchedule" }
+          },
+          "additionalProperties": false
+        }
+      },
+      "additionalProperties": false
+    },
+    "SpecialSchedule": {
+      "type": "object",
+      "description": "A schedule based on specific occurrences within a month (e.g., '2nd and 4th Wednesday').",
+      "required": ["type", "pattern"],
+      "properties": {
+        "type": {
+          "const": "special",
+          "description": "Indicates this is an nth-weekday-of-month schedule."
+        },
+        "pattern": {
+          "type": "object",
+          "description": "Defines which weekday and which occurrences of that weekday within each month.",
+          "required": ["weekday", "occurrences", "timeRange"],
+          "properties": {
+            "weekday": {
+              "type": "integer",
+              "description": "Day of week as a number: 0 = Sunday, 1 = Monday, 2 = Tuesday, 3 = Wednesday, 4 = Thursday, 5 = Friday, 6 = Saturday.",
+              "minimum": 0,
+              "maximum": 6,
+              "examples": [3, 5]
+            },
+            "occurrences": {
+              "type": "array",
+              "description": "Which occurrence(s) of the weekday in the month. 1 = first, 2 = second, 3 = third, 4 = fourth, 5 = fifth (rare).",
+              "items": {
+                "type": "integer",
+                "minimum": 1,
+                "maximum": 5
+              },
+              "minItems": 1,
+              "uniqueItems": true,
+              "examples": [[2, 4], [1, 3], [3]]
+            },
+            "timeRange": {
+              "$ref": "#/$defs/TimeRange",
+              "description": "Operating hours on the scheduled days."
+            }
+          },
+          "additionalProperties": false
+        }
+      },
+      "additionalProperties": false
+    },
+    "DaySchedule": {
+      "oneOf": [
+        { "$ref": "#/$defs/TimeRange" },
+        { "type": "null" }
+      ],
+      "description": "Operating hours for a specific day, or null if closed that day."
+    },
+    "TimeRange": {
+      "type": "object",
+      "description": "A time range with opening and closing times.",
+      "required": ["open", "close"],
+      "properties": {
+        "open": {
+          "$ref": "#/$defs/Time",
+          "description": "Opening time."
+        },
+        "close": {
+          "$ref": "#/$defs/Time",
+          "description": "Closing time. Must be after opening time."
+        }
+      },
+      "additionalProperties": false
+    },
+    "Time": {
+      "type": "object",
+      "description": "A time of day in 24-hour format.",
+      "required": ["hour", "minute"],
+      "properties": {
+        "hour": {
+          "type": "integer",
+          "description": "Hour in 24-hour format (0-23). Examples: 9 = 9am, 14 = 2pm, 20 = 8pm.",
+          "minimum": 0,
+          "maximum": 23
+        },
+        "minute": {
+          "type": "integer",
+          "description": "Minute (0-59).",
+          "minimum": 0,
+          "maximum": 59
+        }
+      },
+      "additionalProperties": false
+    },
+    "Coordinates": {
+      "type": "object",
+      "description": "Geographic coordinates (WGS84 / GPS coordinates).",
+      "required": ["lat", "lng"],
+      "properties": {
+        "lat": {
+          "type": "number",
+          "description": "Latitude in decimal degrees. Positive = North, Negative = South.",
+          "minimum": -90,
+          "maximum": 90,
+          "examples": [32.8832, 33.1945894]
+        },
+        "lng": {
+          "type": "number",
+          "description": "Longitude in decimal degrees. Positive = East, Negative = West.",
+          "minimum": -180,
+          "maximum": 180,
+          "examples": [-117.2025, -117.3769174]
+        }
+      },
+      "additionalProperties": false
+    }
+  }
+}

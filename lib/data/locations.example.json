@@ -1,0 +1,194 @@
+[
+	{
+		"id": "main-street-food-bank",
+		"name": {
+			"en": "Main Street Food Bank",
+			"es": "Banco de Alimentos de Main Street"
+		},
+		"description": {
+			"en": "Please bring your own bags. Client choice pantry available.",
+			"es": "Por favor traiga sus propias bolsas. Despensa de elección disponible."
+		},
+		"address": "123 Main Street",
+		"city": "Anytown",
+		"state": "CA",
+		"postcode": "90210",
+		"phone": "555-123-4567",
+		"website": "https://example.org/food-bank",
+		"rawScheduleText": {
+			"en": "Weekly Mon-Fri 9am-12pm",
+			"es": "Semanal Lun-Vie 9am-12pm"
+		},
+		"closures": null,
+		"eligibility": null,
+		"tags": ["Walk-up", "Drive-through"],
+		"hidden": false,
+		"schedule": {
+			"type": "weekly",
+			"schedule": {
+				"monday": {
+					"open": { "hour": 9, "minute": 0 },
+					"close": { "hour": 12, "minute": 0 }
+				},
+				"tuesday": {
+					"open": { "hour": 9, "minute": 0 },
+					"close": { "hour": 12, "minute": 0 }
+				},
+				"wednesday": {
+					"open": { "hour": 9, "minute": 0 },
+					"close": { "hour": 12, "minute": 0 }
+				},
+				"thursday": {
+					"open": { "hour": 9, "minute": 0 },
+					"close": { "hour": 12, "minute": 0 }
+				},
+				"friday": {
+					"open": { "hour": 9, "minute": 0 },
+					"close": { "hour": 12, "minute": 0 }
+				},
+				"saturday": null,
+				"sunday": null
+			}
+		},
+		"coordinates": {
+			"lat": 34.0522,
+			"lng": -118.2437
+		}
+	},
+	{
+		"id": "community-church-pantry",
+		"name": {
+			"en": "Community Church Pantry",
+			"es": "Despensa de la Iglesia Comunitaria"
+		},
+		"description": {
+			"en": "",
+			"es": ""
+		},
+		"address": "456 Oak Avenue",
+		"city": "Anytown",
+		"state": "CA",
+		"postcode": "90211",
+		"phone": null,
+		"website": null,
+		"rawScheduleText": {
+			"en": "2nd and 4th Saturday of the month from 10am-12pm",
+			"es": "2do y 4to sábado del mes de 10am-12pm"
+		},
+		"closures": null,
+		"eligibility": {
+			"en": "Local residents only. Please bring ID.",
+			"es": "Solo residentes locales. Por favor traiga identificación."
+		},
+		"tags": ["Walk-up"],
+		"hidden": false,
+		"schedule": {
+			"type": "special",
+			"pattern": {
+				"weekday": 6,
+				"occurrences": [2, 4],
+				"timeRange": {
+					"open": { "hour": 10, "minute": 0 },
+					"close": { "hour": 12, "minute": 0 }
+				}
+			}
+		},
+		"coordinates": {
+			"lat": 34.0525,
+			"lng": -118.2440
+		}
+	},
+	{
+		"id": "evening-meals-program",
+		"name": {
+			"en": "Evening Meals Program",
+			"es": "Programa de Comidas Nocturnas"
+		},
+		"description": {
+			"en": "Hot meals served. Vegetarian options available.",
+			"es": "Se sirven comidas calientes. Opciones vegetarianas disponibles."
+		},
+		"address": "789 Elm Street",
+		"city": "Anytown",
+		"state": "CA",
+		"postcode": "90212",
+		"phone": "555-987-6543",
+		"website": null,
+		"rawScheduleText": {
+			"en": "Weekly Mon, Wed, Fri 5-7pm",
+			"es": "Semanal Lun, Mié, Vie 5-7pm"
+		},
+		"closures": null,
+		"eligibility": null,
+		"tags": ["Walk-up"],
+		"hidden": false,
+		"schedule": {
+			"type": "weekly",
+			"schedule": {
+				"monday": {
+					"open": { "hour": 17, "minute": 0 },
+					"close": { "hour": 19, "minute": 0 }
+				},
+				"tuesday": null,
+				"wednesday": {
+					"open": { "hour": 17, "minute": 0 },
+					"close": { "hour": 19, "minute": 0 }
+				},
+				"thursday": null,
+				"friday": {
+					"open": { "hour": 17, "minute": 0 },
+					"close": { "hour": 19, "minute": 0 }
+				},
+				"saturday": null,
+				"sunday": null
+			}
+		},
+		"coordinates": {
+			"lat": 34.0530,
+			"lng": -118.2450
+		}
+	},
+	{
+		"id": "senior-center-distribution",
+		"name": {
+			"en": "Senior Center Food Distribution",
+			"es": "Distribución de Alimentos del Centro de Mayores"
+		},
+		"description": {
+			"en": "Fresh produce and shelf-stable items.",
+			"es": "Productos frescos y artículos no perecederos."
+		},
+		"address": "321 Pine Road",
+		"city": "Anytown",
+		"state": "CA",
+		"postcode": "90213",
+		"phone": "555-456-7890",
+		"website": "https://example.org/seniors",
+		"rawScheduleText": {
+			"en": "3rd Thursday of each month, 1-3pm",
+			"es": "3er jueves de cada mes, 1-3pm"
+		},
+		"closures": null,
+		"eligibility": {
+			"en": "Adults 60+ years. Bring proof of age on first visit.",
+			"es": "Adultos de 60+ años. Traiga comprobante de edad en su primera visita."
+		},
+		"tags": ["Drive-through"],
+		"hidden": false,
+		"schedule": {
+			"type": "special",
+			"pattern": {
+				"weekday": 4,
+				"occurrences": [3],
+				"timeRange": {
+					"open": { "hour": 13, "minute": 0 },
+					"close": { "hour": 15, "minute": 0 }
+				}
+			}
+		},
+		"coordinates": {
+			"lat": 34.0540,
+			"lng": -118.2460
+		}
+	}
+]
