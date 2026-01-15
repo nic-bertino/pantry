@@ -11,10 +11,7 @@ sorting.
 - **Bilingual** — Full English and Spanish support, auto-detected from browser
 - **Distance-aware** — Optional geolocation to sort by proximity and filter by
   distance
-- **Eligibility filtering** — Quickly find locations with no documentation
-  requirements
-- **Mobile-first** — Designed for the people who need it most, on the devices
-  they use
+- **Mobile-first** — Designed to help find food in any context.
 
 ## Getting Started
 
@@ -53,6 +50,15 @@ Location data is fetched at build time. Each location includes:
 - Contact information
 - Eligibility requirements (if any)
 - Service type (walk-up, drive-through)
+
+## Design principles
+
+Two questions drive every feature and designed element of Pantry:
+
+- Where am I?
+- How quickly can I get help?
+
+Pantry differs from maps or "store locator" displays: these can be overwhelming and can require many inputs to find useful information quickly. Within seconds of visiting Pantry, it should be immediately clear where food resources are available. 
 
 ## License
 
