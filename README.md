@@ -40,9 +40,15 @@ bun run lint     # Run ESLint
 - Tailwind CSS 4
 - TypeScript
 
-## Data
+## Deploying Pantry: Locations
 
-Location data is fetched at build time. Each location includes:
+Pantry uses a draft locations schema located at `lib/data/locations.schema.json`, with example locations built in `lib/data/locations.example.json`.
+
+The default build process checks .env for `LOCATIONS_URL` and can rebuilds on deploy.
+
+**Help needed**: If you have a schema format change request, please start a PR or discussion–the schema is expected to change and evolve. 
+
+Each location includes:
 
 - Name (bilingual)
 - Address and coordinates
