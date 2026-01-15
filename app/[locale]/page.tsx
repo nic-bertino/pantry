@@ -1,7 +1,6 @@
 "use client";
 
 import { useState } from "react";
-import { useTranslations } from "@/lib/i18n/use-translations";
 import { Footer } from "@/components/finder/footer";
 import { Header } from "@/components/finder/header";
 import { LocationInput } from "@/components/finder/location-input";
@@ -12,7 +11,6 @@ import { useLocations } from "@/hooks/use-locations";
 import type { TimeFilter } from "@/lib/types/location";
 
 export default function FinderPage() {
-	const { t } = useTranslations();
 	const [filter, setFilter] = useState<TimeFilter>("open-now");
 
 	const {
@@ -54,15 +52,6 @@ export default function FinderPage() {
 			/>
 
 			<main>
-				{/* Context message when Open Now is empty */}
-				{filter === "open-now" && locations.length === 0 && (
-					<div className="container mx-auto max-w-3xl px-4 pt-4">
-						<p className="text-muted-foreground">
-							{t("noLocationsOpenNow")}
-						</p>
-					</div>
-				)}
-
 				<LocationList
 					locations={locations}
 					filter={filter}
