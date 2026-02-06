@@ -16,17 +16,18 @@ import type {
 import type { Region } from "./use-region";
 
 // Dynamic import map - only loads the requested region's data
+// Dev regions gated behind NEXT_PUBLIC_DEV_REGIONS to avoid build errors
+// when dev data files aren't present
 async function loadRegionData(region: Region): Promise<FoodLocation[]> {
-	switch (region) {
-		case "san-diego":
-			return (await import("@/lib/data/locations.json")).default as FoodLocation[];
-		case "riverside":
-			return (await import("@/lib/data/locations-riverside.json")).default as FoodLocation[];
-		case "houston":
-			return (await import("@/lib/data/locations-houston.json")).default as FoodLocation[];
-		default:
-			return (await import("@/lib/data/locations.json")).default as FoodLocation[];
+	if (process.env.NEXT_PUBLIC_DEV_REGIONS === "true") {
+		switch (region) {
+			case "riverside":
+				return (await import("@/lib/data/locations-riverside.json")).default as FoodLocation[];
+			case "houston":
+				return (await import("@/lib/data/locations-houston.json")).default as FoodLocation[];
+		}
 	}
+	return (await import("@/lib/data/locations.json")).default as FoodLocation[];
 }
 
 interface UseLocationsOptions {

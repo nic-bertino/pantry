@@ -10,12 +10,15 @@ export interface RegionConfig {
 	defaultCenter: { lat: number; lng: number };
 }
 
-export const REGIONS: Record<Region, RegionConfig> = {
+const PRODUCTION_REGIONS: Record<string, RegionConfig> = {
 	"san-diego": {
 		id: "san-diego",
 		name: "San Diego",
 		defaultCenter: { lat: 32.7157, lng: -117.1611 },
 	},
+};
+
+const DEV_REGIONS: Record<string, RegionConfig> = {
 	riverside: {
 		id: "riverside",
 		name: "Riverside",
@@ -27,6 +30,11 @@ export const REGIONS: Record<Region, RegionConfig> = {
 		defaultCenter: { lat: 29.7601, lng: -95.3701 },
 	},
 };
+
+export const REGIONS: Record<string, RegionConfig> =
+	process.env.NEXT_PUBLIC_DEV_REGIONS === "true"
+		? { ...PRODUCTION_REGIONS, ...DEV_REGIONS }
+		: PRODUCTION_REGIONS;
 
 const DEFAULT_REGION: Region = "san-diego";
 
