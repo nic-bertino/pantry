@@ -88,18 +88,27 @@ export function LocationInput({
 			<PopoverPrimitive.Trigger asChild>
 				<button
 					type="button"
-					className="flex items-center gap-1.5 text-sm text-left hover:opacity-70 transition-opacity"
+					className={cn(
+						"inline-flex items-center gap-1.5 rounded-full text-sm transition-colors",
+						hasLocation
+							? "border border-border bg-muted/50 px-3 py-1.5 hover:bg-muted"
+							: "border border-border px-3 py-1.5 hover:bg-muted/50",
+					)}
 				>
-					<MapPinIcon className="h-4 w-4 text-muted-foreground shrink-0" />
-					<span className={hasLocation ? "text-foreground" : "text-muted-foreground"}>
+					<MapPinIcon
+						className={cn(
+							"h-3.5 w-3.5 shrink-0",
+							hasLocation ? "text-muted-foreground" : "text-primary",
+						)}
+					/>
+					<span
+						className={cn(
+							hasLocation ? "text-foreground" : "text-muted-foreground",
+						)}
+					>
 						{getTriggerLabel()}
 					</span>
-					{hasLocation && (
-						<span className="text-muted-foreground">· {t("change")}</span>
-					)}
-					{!hasLocation && (
-						<ChevronDownIcon className="h-3 w-3 text-muted-foreground" />
-					)}
+					<ChevronDownIcon className="h-3 w-3 text-muted-foreground" />
 				</button>
 			</PopoverPrimitive.Trigger>
 

@@ -1,6 +1,7 @@
 "use client";
 
 import { Button } from "@/components/ui/button";
+import { approximateCount } from "@/lib/format/count";
 import { useTranslations } from "@/lib/i18n/use-translations";
 import type { TimeFilter } from "@/lib/types/location";
 
@@ -29,13 +30,11 @@ export function TimeFilterBar({
 	};
 
 	return (
-		<div className="sticky top-[73px] z-40 border-b border-border bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
-			<div className="container mx-auto px-4 py-3 space-y-3">
-				{/* Row 1: Location */}
-				{locationInput}
-
-				{/* Row 2: Time filters */}
-				<div className="flex gap-2 overflow-x-auto scrollbar-hide">
+		<div className="border-b border-border">
+			<div className="container mx-auto px-4 py-3">
+				<div className="flex items-center gap-2 overflow-x-auto scrollbar-hide">
+					{locationInput}
+					<div className="h-4 w-px bg-border shrink-0" />
 					{FILTERS.map((filter) => {
 						const isActive = activeFilter === filter;
 						const count = counts?.[filter];
@@ -50,7 +49,7 @@ export function TimeFilterBar({
 							>
 								{filterLabels[filter]}
 								{count !== undefined && (
-									<span className="ml-1.5 text-xs opacity-70">{count}</span>
+									<span className="ml-1.5 text-xs opacity-70">{approximateCount(count)}</span>
 								)}
 							</Button>
 						);

@@ -1,5 +1,6 @@
 "use client";
 
+import { memo } from "react";
 import { useTranslations } from "@/lib/i18n/use-translations";
 import type { DisplayLocation } from "@/lib/types/location";
 import { StatusBadge } from "./status-badge";
@@ -9,7 +10,7 @@ interface LocationCardProps {
 	onClick?: () => void;
 }
 
-export function LocationCard({ location, onClick }: LocationCardProps) {
+export const LocationCard = memo(function LocationCard({ location, onClick }: LocationCardProps) {
 	const { t, tBilingual } = useTranslations();
 
 	const name = tBilingual(location.name);
@@ -76,4 +77,4 @@ export function LocationCard({ location, onClick }: LocationCardProps) {
 			</button>
 		</article>
 	);
-}
+});

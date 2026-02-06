@@ -480,6 +480,9 @@ export function isOpenThisWeek(
 	now: Date = new Date(),
 	timezone = "America/Los_Angeles",
 ): boolean {
+	// Include unknown schedules - we can't determine they're NOT open this week
+	if (schedule.type === "unknown") return true;
+
 	const endOfWeek = new Date(now);
 	endOfWeek.setDate(endOfWeek.getDate() + 7);
 	return isOpenInRange(schedule, now, endOfWeek, timezone);

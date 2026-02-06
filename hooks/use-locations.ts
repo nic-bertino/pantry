@@ -1,7 +1,6 @@
 "use client";
 
-import { useMemo } from "react";
-import locationsData from "@/lib/data/locations.json";
+import { useMemo, useState, useEffect } from "react";
 import {
 	calculateAvailability,
 	isOpenNow,
@@ -14,13 +13,26 @@ import type {
 	FoodLocation,
 	TimeFilter,
 } from "@/lib/types/location";
+import type { Region } from "./use-region";
 
-// Type assertion for imported JSON
-const locations = locationsData as FoodLocation[];
+// Dynamic import map - only loads the requested region's data
+async function loadRegionData(region: Region): Promise<FoodLocation[]> {
+	switch (region) {
+		case "san-diego":
+			return (await import("@/lib/data/locations.json")).default as FoodLocation[];
+		case "riverside":
+			return (await import("@/lib/data/locations-riverside.json")).default as FoodLocation[];
+		case "houston":
+			return (await import("@/lib/data/locations-houston.json")).default as FoodLocation[];
+		default:
+			return (await import("@/lib/data/locations.json")).default as FoodLocation[];
+	}
+}
 
 interface UseLocationsOptions {
 	filter: TimeFilter;
 	userCoordinates?: { lat: number; lng: number } | null;
+	region?: Region;
 }
 
 /**
@@ -46,18 +58,37 @@ function calculateDistance(
 	return R * c;
 }
 
-export function useLocations({ filter, userCoordinates }: UseLocationsOptions) {
+export function useLocations({ filter, userCoordinates, region = "san-diego" }: UseLocationsOptions) {
+	const [rawLocations, setRawLocations] = useState<FoodLocation[]>([]);
+	const [isLoading, setIsLoading] = useState(true);
 	const now = useMemo(() => new Date(), []);
 
-	const displayLocations = useMemo(() => {
-		// Filter out hidden locations
-		const visibleLocations = locations.filter((loc) => !loc.hidden);
+	// Dynamic import - only loads the requested region's data
+	useEffect(() => {
+		setIsLoading(true);
+		loadRegionData(region)
+			.then((data) => {
+				setRawLocations(data);
+				setIsLoading(false);
+			})
+			.catch((err) => {
+				console.error(`Failed to load region data: ${region}`, err);
+				setIsLoading(false);
+			});
+	}, [region]);
 
-		// Debug: check if locations have coordinates
-		const withCoords = visibleLocations.filter((loc) => loc.coordinates);
+	// Single-pass processing: calculate availability, distance, and categorize by filter
+	const { displayLocations, counts } = useMemo(() => {
+		const visibleLocations = rawLocations.filter((loc) => !loc.hidden);
 
-		// Calculate availability and add to each location
-		const withAvailability: DisplayLocation[] = visibleLocations.map((loc) => {
+		const counts = {
+			"open-now": 0,
+			today: 0,
+			tomorrow: 0,
+			"this-week": 0,
+		};
+
+		const displayLocations: DisplayLocation[] = visibleLocations.map((loc) => {
 			const availability = calculateAvailability(loc.schedule, now, loc.timezone);
 
 			// Calculate distance if user coordinates available
@@ -71,6 +102,12 @@ export function useLocations({ filter, userCoordinates }: UseLocationsOptions) {
 				);
 			}
 
+			// Count for each filter in single pass
+			if (isOpenNow(loc.schedule, now, loc.timezone)) counts["open-now"]++;
+			if (isOpenToday(loc.schedule, now, loc.timezone)) counts.today++;
+			if (isOpenTomorrow(loc.schedule, now, loc.timezone)) counts.tomorrow++;
+			if (isOpenThisWeek(loc.schedule, now, loc.timezone)) counts["this-week"]++;
+
 			return {
 				...loc,
 				availability,
@@ -78,21 +115,8 @@ export function useLocations({ filter, userCoordinates }: UseLocationsOptions) {
 			};
 		});
 
-		// Debug: log first location with distance
-		const firstWithDist = withAvailability.find(
-			(loc) => loc.distance !== undefined,
-		);
-		if (firstWithDist) {
-			console.log(
-				"[Locations] Sample distance:",
-				firstWithDist.name.en,
-				firstWithDist.distance?.toFixed(1),
-				"mi",
-			);
-		}
-
-		return withAvailability;
-	}, [now, userCoordinates]);
+		return { displayLocations, counts };
+	}, [rawLocations, now, userCoordinates]);
 
 	// Filter based on time filter
 	const filteredLocations = useMemo(() => {
@@ -151,28 +175,11 @@ export function useLocations({ filter, userCoordinates }: UseLocationsOptions) {
 		});
 	}, [filteredLocations, now]);
 
-	// Calculate counts for each filter
-	const counts = useMemo(() => {
-		return {
-			"open-now": displayLocations.filter((loc) =>
-				isOpenNow(loc.schedule, now, loc.timezone),
-			).length,
-			today: displayLocations.filter((loc) =>
-				isOpenToday(loc.schedule, now, loc.timezone),
-			).length,
-			tomorrow: displayLocations.filter((loc) =>
-				isOpenTomorrow(loc.schedule, now, loc.timezone),
-			).length,
-			"this-week": displayLocations.filter((loc) =>
-				isOpenThisWeek(loc.schedule, now, loc.timezone),
-			).length,
-		};
-	}, [displayLocations, now]);
-
 	return {
 		locations: sortedLocations,
 		allLocations: displayLocations,
 		counts,
 		total: displayLocations.length,
+		isLoading,
 	};
 }
