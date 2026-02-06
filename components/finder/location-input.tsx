@@ -89,7 +89,7 @@ export function LocationInput({
 				<button
 					type="button"
 					className={cn(
-						"inline-flex items-center gap-1.5 rounded-full text-sm transition-colors",
+						"inline-flex items-center gap-1.5 whitespace-nowrap rounded-full text-sm transition-colors",
 						hasLocation
 							? "border border-border bg-muted/50 px-3 py-1.5 hover:bg-muted"
 							: "border border-border px-3 py-1.5 hover:bg-muted/50",

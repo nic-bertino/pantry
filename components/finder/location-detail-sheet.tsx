@@ -43,27 +43,53 @@ export function LocationDetailSheet({
 		<Sheet open={open} onOpenChange={onOpenChange}>
 			<SheetContent side="bottom" className="max-h-[85vh] overflow-y-auto">
 				<SheetHeader className="text-left">
-					<div className="flex items-start justify-between gap-4 pr-8">
-						<SheetTitle className="text-xl font-semibold leading-tight">
-							{name}
-						</SheetTitle>
+					<SheetTitle className="text-xl font-semibold leading-tight pr-8">
+						{name}
+					</SheetTitle>
+					<SheetDescription>
 						<StatusBadge
 							availability={location.availability}
 							timezone={location.timezone}
+							variant="text"
 						/>
-					</div>
-					<SheetDescription className="text-base text-muted-foreground">
-						{location.city}
-						{location.distance !== undefined && (
-							<span>
-								{" "}
-								· {t("milesAway", { miles: location.distance.toFixed(1) })}
-							</span>
-						)}
 					</SheetDescription>
 				</SheetHeader>
 
 				<div className="px-6 pb-6 space-y-4">
+					{/* Primary action */}
+					<Button asChild className="w-full">
+						<a href={mapsUrl} target="_blank" rel="noopener noreferrer">
+							<MapPinIcon className="mr-2 h-4 w-4" />
+							{t("directions")}
+						</a>
+					</Button>
+
+					{/* Secondary actions */}
+					{(phoneUrl || location.website) && (
+						<div className="flex gap-3">
+							{phoneUrl && (
+								<Button variant="outline" asChild className="flex-1">
+									<a href={phoneUrl}>
+										<PhoneIcon className="mr-2 h-4 w-4" />
+										{t("call")}
+									</a>
+								</Button>
+							)}
+							{location.website && (
+								<Button variant="outline" asChild className="flex-1">
+									<a
+										href={location.website}
+										target="_blank"
+										rel="noopener noreferrer"
+									>
+										<GlobeIcon className="mr-2 h-4 w-4" />
+										{t("website")}
+									</a>
+								</Button>
+							)}
+						</div>
+					)}
+
 					{/* Eligibility warning */}
 					{eligibility && (
 						<p className="text-amber-600 dark:text-amber-400">{eligibility}</p>
@@ -71,53 +97,14 @@ export function LocationDetailSheet({
 
 					{/* Description */}
 					{description && (
-						<p className="text-muted-foreground">{description}</p>
+						<p className="text-foreground/70">{description}</p>
 					)}
 
-					{/* Schedule */}
-					{scheduleText && (
-						<div>
-							<h4 className="font-medium mb-1">{t("schedule")}</h4>
-							<p className="text-muted-foreground">{scheduleText}</p>
-						</div>
-					)}
-
-					{/* Address */}
-					<div>
-						<p className="text-muted-foreground">{fullAddress}</p>
+					{/* Schedule & Address */}
+					<div className="text-muted-foreground">
+						{scheduleText && <p>{scheduleText}</p>}
+						<p>{fullAddress}</p>
 					</div>
-
-					{/* Actions */}
-					<div className="flex gap-3 pt-2">
-						<Button asChild className="flex-1">
-							<a href={mapsUrl} target="_blank" rel="noopener noreferrer">
-								<MapPinIcon className="mr-2 h-4 w-4" />
-								{t("directions")}
-							</a>
-						</Button>
-						{phoneUrl && (
-							<Button variant="outline" asChild className="flex-1">
-								<a href={phoneUrl}>
-									<PhoneIcon className="mr-2 h-4 w-4" />
-									{t("call")}
-								</a>
-							</Button>
-						)}
-					</div>
-
-					{/* Website if available */}
-					{location.website && (
-						<Button variant="ghost" asChild className="w-full">
-							<a
-								href={location.website}
-								target="_blank"
-								rel="noopener noreferrer"
-							>
-								<GlobeIcon className="mr-2 h-4 w-4" />
-								{t("website")}
-							</a>
-						</Button>
-					)}
 				</div>
 			</SheetContent>
 		</Sheet>
