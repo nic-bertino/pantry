@@ -28,6 +28,7 @@ interface LocationListProps {
 	filter: TimeFilter;
 	isLoading?: boolean;
 	geoPromptSlot?: React.ReactNode;
+	filterChipsSlot?: React.ReactNode;
 }
 
 export function LocationList({
@@ -35,6 +36,7 @@ export function LocationList({
 	filter,
 	isLoading,
 	geoPromptSlot,
+	filterChipsSlot,
 }: LocationListProps) {
 	const { t } = useTranslations();
 	const [selectedLocation, setSelectedLocation] =
@@ -77,13 +79,23 @@ export function LocationList({
 	}
 
 	if (locations.length === 0) {
-		return <EmptyState filter={filter} />;
+		return (
+			<>
+				{filterChipsSlot && (
+					<div className="container mx-auto max-w-3xl px-4 pt-4">
+						{filterChipsSlot}
+					</div>
+				)}
+				<EmptyState filter={filter} />
+			</>
+		);
 	}
 
 	return (
 		<>
 			<div className="container mx-auto max-w-3xl px-4 py-4">
 				{geoPromptSlot && <div className="mb-3">{geoPromptSlot}</div>}
+				{filterChipsSlot && <div className="mb-3">{filterChipsSlot}</div>}
 
 				{/* Locations with known schedules */}
 				{scheduled.length > 0 && (

@@ -1,6 +1,11 @@
 "use client";
 
-import { Suspense, useState } from "react";
+import { Suspense, useMemo, useState } from "react";
+import {
+	FilterChips,
+	filterByDistanceRing,
+	type DistanceRing,
+} from "@/components/finder/filter-chips";
 import { Footer } from "@/components/finder/footer";
 import { Header } from "@/components/finder/header";
 import { LocationInput } from "@/components/finder/location-input";
@@ -13,6 +18,7 @@ import type { TimeFilter } from "@/lib/types/location";
 
 function FinderContent() {
 	const [filter, setFilter] = useState<TimeFilter>("open-now");
+	const [distanceFilter, setDistanceFilter] = useState<DistanceRing>(null);
 	const region = useRegion();
 
 	const {
@@ -31,6 +37,12 @@ function FinderContent() {
 		region: region.id,
 	});
 
+	// Apply distance radius filter
+	const filteredLocations = useMemo(
+		() => filterByDistanceRing(locations, distanceFilter),
+		[locations, distanceFilter],
+	);
+
 	// Location input element
 	const locationInputElement = (
 		<LocationInput
@@ -41,6 +53,15 @@ function FinderContent() {
 			isLoading={geoLoading}
 			onRequestBrowserLocation={requestPermission}
 			onSetZipLocation={setZipLocation}
+		/>
+	);
+
+	// Filter chips element (self-hides when no distance data)
+	const filterChipsElement = (
+		<FilterChips
+			locations={locations}
+			distanceFilter={distanceFilter}
+			onDistanceChange={setDistanceFilter}
 		/>
 	);
 
@@ -65,9 +86,10 @@ function FinderContent() {
 
 			<main>
 				<LocationList
-					locations={locations}
+					locations={filteredLocations}
 					filter={filter}
 					isLoading={locationsLoading}
+					filterChipsSlot={filterChipsElement}
 				/>
 			</main>
 
