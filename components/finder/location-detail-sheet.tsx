@@ -104,13 +104,11 @@ export function LocationDetailSheet({
 			)}
 
 			{/* Description */}
-			{description && (
-				<p className="text-foreground/70">{description}</p>
-			)}
+			{description && <p className="text-foreground/70">{description}</p>}
 
 			{/* Schedule & Address */}
 			<div className="text-muted-foreground">
-				{scheduleText && <p>{scheduleText}</p>}
+				{scheduleText && <p className="mb-2">{scheduleText}</p>}
 				<p>{fullAddress}</p>
 			</div>
 		</div>
