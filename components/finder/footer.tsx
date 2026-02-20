@@ -15,7 +15,6 @@ export function Footer() {
 						className="w-4 h-4 opacity-60"
 					/>
 					<span>
-						Powered by{" "}
 						<a
 							href="https://github.com/nic-bertino/pantry"
 							target="_blank"
@@ -23,8 +22,8 @@ export function Footer() {
 							className="underline underline-offset-2 hover:text-foreground transition-colors"
 						>
 							Pantry
-						</a>
-						, an open-source project
+						</a>{" "}
+						is an open-source project
 					</span>
 				</div>
 			</div>

@@ -1,8 +1,6 @@
 "use client";
 
 import { useMemo } from "react";
-import { CheckIcon } from "lucide-react";
-import { cn } from "@/lib/utils";
 import { useTranslations } from "@/lib/i18n/use-translations";
 import type { DisplayLocation } from "@/lib/types/location";
 
@@ -37,7 +35,8 @@ export function FilterChips({
 	}
 
 	return (
-		<div className="flex items-center gap-1.5">
+		<>
+			<div className="h-4 w-px bg-border shrink-0 mx-1" aria-hidden="true" />
 			{distanceOptions.map(({ ring, label }) => {
 				const isActive = distanceFilter === ring;
 				return (
@@ -45,19 +44,18 @@ export function FilterChips({
 						key={ring}
 						type="button"
 						onClick={() => onDistanceChange(isActive ? null : ring)}
-						className={cn(
-							"inline-flex shrink-0 items-center gap-1 px-2 py-1 text-xs font-medium rounded-full border transition-colors whitespace-nowrap",
+						aria-pressed={isActive}
+						className={
 							isActive
-								? "border-primary bg-primary text-primary-foreground"
-								: "border-border bg-background hover:bg-muted",
-						)}
+								? "shrink-0 inline-flex items-center gap-1.5 rounded-full border border-primary bg-primary px-4 py-2 text-sm font-medium text-primary-foreground transition-colors"
+								: "shrink-0 inline-flex items-center gap-1.5 rounded-full border border-border px-4 py-2 text-sm text-muted-foreground hover:text-foreground hover:bg-muted/50 active:bg-muted transition-colors"
+						}
 					>
-						{isActive && <CheckIcon className="h-3 w-3" />}
 						{label}
 					</button>
 				);
 			})}
-		</div>
+		</>
 	);
 }
 

@@ -1,7 +1,7 @@
 {
 	"en": {
+		"skipToContent": "Skip to main content",
 		"appTitle": "Find Food Now",
-		"appSubtitle": "Free food distribution in San Diego",
 		"filterOpenNow": "Open Now",
 		"filterToday": "Today",
 		"filterTomorrow": "Tomorrow",
@@ -92,11 +92,19 @@
 		"change": "Change",
 		"opens": "Opens",
 		"moreLocationsCount": "{count} more",
-		"callForHours": "Call for hours"
+		"callForHours": "Call for hours",
+		"locatingYou": "Finding your location...",
+		"locationSet": "Location set",
+		"clearLocation": "Clear location",
+		"retry": "Try again",
+		"enableInSettings": "Enable in browser settings",
+		"locationUnavailable": "Location unavailable",
+		"locationTimedOut": "Location request timed out",
+		"locationDenied": "Location permission denied"
 	},
 	"es": {
+		"skipToContent": "Saltar al contenido principal",
 		"appTitle": "Encuentra Comida Ahora",
-		"appSubtitle": "Distribución gratuita de alimentos en San Diego",
 		"filterOpenNow": "Abierto Ahora",
 		"filterToday": "Hoy",
 		"filterTomorrow": "Mañana",
@@ -187,6 +195,14 @@
 		"change": "Cambiar",
 		"opens": "Abre",
 		"moreLocationsCount": "{count} más",
-		"callForHours": "Llamar para horarios"
+		"callForHours": "Llamar para horarios",
+		"locatingYou": "Buscando tu ubicación...",
+		"locationSet": "Ubicación establecida",
+		"clearLocation": "Eliminar ubicación",
+		"retry": "Intentar de nuevo",
+		"enableInSettings": "Habilitar en ajustes del navegador",
+		"locationUnavailable": "Ubicación no disponible",
+		"locationTimedOut": "Tiempo de espera agotado",
+		"locationDenied": "Permiso de ubicación denegado"
 	}
 }

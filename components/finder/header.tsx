@@ -3,7 +3,7 @@
 import Image from "next/image";
 import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
-import { Button } from "@/components/ui/button";
+import { ChevronDownIcon } from "lucide-react";
 import { useTranslations } from "@/lib/i18n/use-translations";
 import type { Locale } from "@/lib/types/location";
 
@@ -20,38 +20,42 @@ export function Header() {
 
 	return (
 		<header className="border-b border-border">
-			<div className="container mx-auto px-4 py-3">
-				{/* Row 1: Logo mark and language toggle */}
-				<div className="flex items-center justify-between mb-1">
-					<Link
-						href={`/${locale}`}
-						className="shrink-0 hover:opacity-80 transition-opacity"
-						aria-label="Home"
-					>
-						<Image
-							src="/pantry-app.svg"
-							alt=""
-							width={28}
-							height={28}
-							className="w-7 h-7"
-							priority
-						/>
-					</Link>
-					<Button
-						variant="outline"
-						size="sm"
+			<div className="container mx-auto px-4 py-2">
+				<div className="flex items-center justify-between">
+					<div className="flex items-center gap-1.5">
+						<Link
+							href={`/${locale}`}
+							className="shrink-0 hover:opacity-80 transition-opacity"
+							aria-label="Home"
+						>
+							<Image
+								src="/pantry-app.svg"
+								alt=""
+								width={20}
+								height={20}
+								className="w-5 h-5"
+								priority
+							/>
+						</Link>
+						<span className="text-sm font-medium">{t("appTitle")}</span>
+						<span className="text-sm text-muted-foreground">
+							Powered by{" "}
+							<a href="https://www.feedingsandiego.com" className="underline">
+								Feeding San Diego
+							</a>
+						</span>
+					</div>
+					<button
+						type="button"
 						onClick={toggleLocale}
-						className="font-medium"
+						aria-label={
+							locale === "en" ? "Switch to Spanish" : "Cambiar a inglés"
+						}
+						className="inline-flex items-center gap-0.5 text-sm text-muted-foreground hover:text-foreground transition-colors px-1 py-1"
 					>
 						{locale === "en" ? "ES" : "EN"}
-					</Button>
-				</div>
-				{/* Row 2: Title and subtitle */}
-				<div>
-					<h1 className="text-xl font-semibold tracking-tight">
-						{t("appTitle")}
-					</h1>
-					<p className="text-sm text-muted-foreground">{t("appSubtitle")}</p>
+						<ChevronDownIcon className="h-3 w-3" aria-hidden="true" />
+					</button>
 				</div>
 			</div>
 		</header>
