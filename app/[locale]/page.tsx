@@ -87,7 +87,7 @@ function FinderContent() {
 				{t("skipToContent")}
 			</a>
 			{isDevRegion && (
-				<div className="bg-amber-500 text-amber-950 text-center text-sm py-1 px-4 font-medium">
+				<div className="bg-primary text-primary-foreground text-center text-sm py-1 px-4 font-medium">
 					Dev Preview: {region.name} ({locations.length} locations)
 				</div>
 			)}

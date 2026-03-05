@@ -93,7 +93,7 @@ export function LocationList({
 				{scheduled.length > 0 && (
 					<div className="space-y-3 sm:space-y-2">
 						{scheduled.map((location) => (
-							<div key={location.id} style={{ contentVisibility: "auto", containIntrinsicSize: "0 60px" }}>
+							<div key={location.id} style={{ contentVisibility: "auto", containIntrinsicSize: "0 64px" }}>
 								<LocationCardWrapper location={location} onSelect={handleLocationSelect} />
 							</div>
 						))}
@@ -125,7 +125,7 @@ export function LocationList({
 						{showUnknown && (
 							<div className="space-y-3 sm:space-y-2 mt-3">
 								{unknown.map((location) => (
-									<div key={location.id} style={{ contentVisibility: "auto", containIntrinsicSize: "0 60px" }}>
+									<div key={location.id} style={{ contentVisibility: "auto", containIntrinsicSize: "0 64px" }}>
 										<LocationCardWrapper location={location} onSelect={handleLocationSelect} />
 									</div>
 								))}

@@ -100,7 +100,7 @@ export function LocationDetailSheet({
 
 			{/* Eligibility warning */}
 			{eligibility && (
-				<p className="text-amber-600 dark:text-amber-400">{eligibility}</p>
+				<p className="text-caution-foreground">{eligibility}</p>
 			)}
 
 			{/* Description */}

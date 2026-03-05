@@ -2,7 +2,7 @@
 
 import { Badge } from "@/components/ui/badge";
 import { useTranslations } from "@/lib/i18n/use-translations";
-import { formatTimeWithTimezone } from "@/lib/schedule/parser";
+import { formatTime } from "@/lib/schedule/parser";
 import { getTimeInTimezone } from "@/lib/schedule/calculator";
 import type { AvailabilityStatus } from "@/lib/types/location";
 
@@ -40,9 +40,8 @@ export function StatusBadge({
 		case "open": {
 			// Get closing time in the location's timezone
 			const localClose = getTimeInTimezone(availability.closesAt, timezone);
-			const closeTime = formatTimeWithTimezone(
+			const closeTime = formatTime(
 				{ hour: localClose.hour, minute: localClose.minute },
-				timezone,
 			);
 			const label = t("openUntil", { time: closeTime });
 			return variant === "text" ? (
@@ -98,9 +97,8 @@ export function StatusBadge({
 						tomorrowLocal.month === opensLocal.month &&
 						tomorrowLocal.dayOfMonth === opensLocal.dayOfMonth;
 
-					const time = formatTimeWithTimezone(
+					const time = formatTime(
 						{ hour: opensLocal.hour, minute: opensLocal.minute },
-						timezone,
 					);
 
 					if (isTomorrowInTz) {
