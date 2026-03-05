@@ -45,8 +45,19 @@ export function parseTimeRange(rangeStr: string): TimeRange | null {
 	const parts = firstRange.split(/\s*[-–—]\s*/);
 	if (parts.length !== 2) return null;
 
-	const open = parseTime(parts[0]);
-	const close = parseTime(parts[1]);
+	let openStr = parts[0].trim();
+	const closeStr = parts[1].trim();
+
+	// If only close has an am/pm marker, inherit it for open
+	// e.g. "2:00 - 3:30 p.m." means both are PM
+	const periodPattern = /\b(am|pm|a\.m\.|p\.m\.)\s*$/i;
+	if (!periodPattern.test(openStr) && periodPattern.test(closeStr)) {
+		const closePeriod = closeStr.match(periodPattern)![1];
+		openStr = `${openStr} ${closePeriod}`;
+	}
+
+	const open = parseTime(openStr);
+	const close = parseTime(closeStr);
 
 	if (!open || !close) return null;
 

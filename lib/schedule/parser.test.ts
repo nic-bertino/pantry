@@ -75,6 +75,27 @@ describe("parseTimeRange", () => {
 		});
 	});
 
+	it("inherits pm from close when open has no period", () => {
+		expect(parseTimeRange("2:00 - 3:30 p.m.")).toEqual({
+			open: { hour: 14, minute: 0 },
+			close: { hour: 15, minute: 30 },
+		});
+	});
+
+	it("inherits am from close when open has no period", () => {
+		expect(parseTimeRange("7:00 - 8:30 a.m.")).toEqual({
+			open: { hour: 7, minute: 0 },
+			close: { hour: 8, minute: 30 },
+		});
+	});
+
+	it("does not inherit when both have periods", () => {
+		expect(parseTimeRange("9:00 AM - 2:00 PM")).toEqual({
+			open: { hour: 9, minute: 0 },
+			close: { hour: 14, minute: 0 },
+		});
+	});
+
 	it("returns null for empty string", () => {
 		expect(parseTimeRange("")).toBeNull();
 	});

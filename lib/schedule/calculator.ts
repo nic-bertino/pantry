@@ -462,7 +462,25 @@ export function isOpenToday(
 	now: Date = new Date(),
 	timezone = "America/Los_Angeles",
 ): boolean {
-	return isOpenOnDay(schedule, now, timezone);
+	if (!isOpenOnDay(schedule, now, timezone)) return false;
+
+	// Check if today's hours have already passed
+	const localTime = getTimeInTimezone(now, timezone);
+	const nowMinutes = localTime.hour * 60 + localTime.minute;
+
+	if (schedule.type === "weekly") {
+		const dayName = DAY_NAMES[localTime.dayOfWeek];
+		const todayHours = schedule.schedule[dayName];
+		if (!todayHours) return false;
+		return nowMinutes < todayHours.close.hour * 60 + todayHours.close.minute;
+	}
+
+	if (schedule.type === "special") {
+		const close = schedule.pattern.timeRange.close;
+		return nowMinutes < close.hour * 60 + close.minute;
+	}
+
+	return false;
 }
 
 export function isOpenTomorrow(
@@ -483,9 +501,15 @@ export function isOpenThisWeek(
 	// Include unknown schedules - we can't determine they're NOT open this week
 	if (schedule.type === "unknown") return true;
 
+	// Check today with time-aware logic (excludes already-passed hours)
+	if (isOpenToday(schedule, now, timezone)) return true;
+
+	// Check future days
+	const tomorrow = new Date(now);
+	tomorrow.setDate(tomorrow.getDate() + 1);
 	const endOfWeek = new Date(now);
 	endOfWeek.setDate(endOfWeek.getDate() + 7);
-	return isOpenInRange(schedule, now, endOfWeek, timezone);
+	return isOpenInRange(schedule, tomorrow, endOfWeek, timezone);
 }
 
 /**

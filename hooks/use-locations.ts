@@ -132,38 +132,50 @@ export function useLocations({ filter, userCoordinates, region = "san-diego" }: 
 		}
 	}, [displayLocations, filter, now]);
 
-	// Sort by opening time: open now first, then by when they open next
+	// Sort locations: distance-first when user has set location, opening-time-first otherwise
 	const sortedLocations = useMemo(() => {
-		return [...filteredLocations].sort((a, b) => {
-			// Get opening time for sorting (0 = open now, otherwise minutes until open)
-			const getOpeningTime = (loc: DisplayLocation): number => {
-				if (loc.availability.status === "open") return 0;
-				if (loc.availability.status === "opening-soon") {
-					return loc.availability.minutesUntil;
-				}
-				if (loc.availability.status === "closed" && loc.availability.opensAt) {
-					return Math.floor(
-						(loc.availability.opensAt.getTime() - now.getTime()) / (1000 * 60),
-					);
-				}
-				return Number.MAX_SAFE_INTEGER; // Unknown status goes to end
-			};
+		const hasLocation = userCoordinates != null;
 
+		// Get opening time for sorting (0 = open now, otherwise minutes until open)
+		const getOpeningTime = (loc: DisplayLocation): number => {
+			if (loc.availability.status === "open") return 0;
+			if (loc.availability.status === "opening-soon") {
+				return loc.availability.minutesUntil;
+			}
+			if (loc.availability.status === "closed" && loc.availability.opensAt) {
+				return Math.floor(
+					(loc.availability.opensAt.getTime() - now.getTime()) / (1000 * 60),
+				);
+			}
+			return Number.MAX_SAFE_INTEGER; // Unknown status goes to end
+		};
+
+		return [...filteredLocations].sort((a, b) => {
+			if (hasLocation) {
+				// Locations without coordinates go to the end
+				if (a.distance === undefined && b.distance !== undefined) return 1;
+				if (a.distance !== undefined && b.distance === undefined) return -1;
+
+				// Distance-first with 0.1mi dead zone
+				if (a.distance !== undefined && b.distance !== undefined) {
+					const distDiff = a.distance - b.distance;
+					if (Math.abs(distDiff) > 0.1) return distDiff;
+				}
+			}
+
+			// Opening time
 			const aTime = getOpeningTime(a);
 			const bTime = getOpeningTime(b);
-
-			// Sort by opening time first
 			if (aTime !== bTime) return aTime - bTime;
 
-			// Then by distance (if available and both are similar opening time)
+			// Distance tiebreaker
 			if (a.distance !== undefined && b.distance !== undefined) {
 				return a.distance - b.distance;
 			}
 
-			// Finally alphabetically
 			return a.name.en.localeCompare(b.name.en);
 		});
-	}, [filteredLocations, now]);
+	}, [filteredLocations, now, userCoordinates]);
 
 	return {
 		locations: sortedLocations,

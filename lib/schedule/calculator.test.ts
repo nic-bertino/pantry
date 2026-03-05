@@ -270,19 +270,49 @@ describe("isOpenNow", () => {
 });
 
 // -------------------------------------------------------------------
-// isOpenToday
+// isOpenToday — time-aware: false if today's hours have already closed
 // -------------------------------------------------------------------
 describe("isOpenToday", () => {
-	it("returns true when schedule has hours for today", () => {
-		// Wednesday
+	it("returns true when schedule has hours later today", () => {
+		// Wednesday 6 AM, schedule open Wed 9-12
 		const now = pacificDate(2024, 0, 3, 6);
 		expect(isOpenToday(weeklyOn("wednesday", 9, 12), now, TZ)).toBe(true);
+	});
+
+	it("returns true when currently within hours", () => {
+		// Wednesday 10 AM, schedule open Wed 9-12
+		const now = pacificDate(2024, 0, 3, 10);
+		expect(isOpenToday(weeklyOn("wednesday", 9, 12), now, TZ)).toBe(true);
+	});
+
+	it("returns false when today's hours have already passed", () => {
+		// Wednesday 3 PM, schedule open Wed 9-12
+		const now = pacificDate(2024, 0, 3, 15);
+		expect(isOpenToday(weeklyOn("wednesday", 9, 12), now, TZ)).toBe(false);
+	});
+
+	it("returns false at exact closing time", () => {
+		// Wednesday 12:00 PM, schedule open Wed 9-12
+		const now = pacificDate(2024, 0, 3, 12, 0);
+		expect(isOpenToday(weeklyOn("wednesday", 9, 12), now, TZ)).toBe(false);
 	});
 
 	it("returns false when schedule has no hours for today", () => {
 		// Wednesday, but schedule is for Tuesday
 		const now = pacificDate(2024, 0, 3, 10);
 		expect(isOpenToday(weeklyOn("tuesday", 9, 12), now, TZ)).toBe(false);
+	});
+
+	it("returns true for special schedule before closing", () => {
+		// 1st Wednesday of Jan 2024 = Jan 3, at 10 AM
+		const now = pacificDate(2024, 0, 3, 10);
+		expect(isOpenToday(specialSchedule(3, [1, 3], 9, 12), now, TZ)).toBe(true);
+	});
+
+	it("returns false for special schedule after closing", () => {
+		// 1st Wednesday of Jan 2024 = Jan 3, at 3 PM
+		const now = pacificDate(2024, 0, 3, 15);
+		expect(isOpenToday(specialSchedule(3, [1, 3], 9, 12), now, TZ)).toBe(false);
 	});
 });
 
@@ -315,6 +345,31 @@ describe("isOpenThisWeek", () => {
 
 	it("returns true for unknown schedules", () => {
 		expect(isOpenThisWeek(unknownSchedule, new Date(), TZ)).toBe(true);
+	});
+
+	it("returns false when only hours this week have already passed", () => {
+		// 1st Wednesday of Jan 2024 = Jan 3, at 3 PM, schedule is 1st-Wed-only 11-13
+		// Next occurrence is Feb 7 — well outside 7 days
+		const now = pacificDate(2024, 0, 3, 15);
+		expect(isOpenThisWeek(specialSchedule(3, [1], 11, 13), now, TZ)).toBe(false);
+	});
+
+	it("returns true when today's hours passed but another day this week has hours", () => {
+		// Wednesday 3 PM, schedule open Wed 9-12 AND Friday 9-12
+		const schedule: SchedulePattern = {
+			type: "weekly",
+			schedule: {
+				monday: null,
+				tuesday: null,
+				wednesday: { open: { hour: 9, minute: 0 }, close: { hour: 12, minute: 0 } },
+				thursday: null,
+				friday: { open: { hour: 9, minute: 0 }, close: { hour: 12, minute: 0 } },
+				saturday: null,
+				sunday: null,
+			},
+		};
+		const now = pacificDate(2024, 0, 3, 15);
+		expect(isOpenThisWeek(schedule, now, TZ)).toBe(true);
 	});
 });
 
