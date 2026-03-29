@@ -11,12 +11,12 @@ import {
 	DialogTitle,
 } from "@/components/ui/dialog";
 import {
-	Sheet,
-	SheetContent,
-	SheetDescription,
-	SheetHeader,
-	SheetTitle,
-} from "@/components/ui/sheet";
+	Drawer,
+	DrawerContent,
+	DrawerDescription,
+	DrawerHeader,
+	DrawerTitle,
+} from "@/components/ui/drawer";
 import { useTranslations } from "@/lib/i18n/use-translations";
 import type { DisplayLocation } from "@/lib/types/location";
 import { StatusBadge } from "./status-badge";
@@ -116,24 +116,24 @@ export function LocationDetailSheet({
 
 	return (
 		<>
-			{/* Mobile: bottom sheet */}
-			<Sheet open={open && isMobile} onOpenChange={onOpenChange}>
-				<SheetContent side="bottom" className="max-h-[85vh] overflow-y-auto">
-					<SheetHeader className="text-left">
-						<SheetTitle className="text-xl font-semibold leading-tight pr-8">
+			{/* Mobile: swipeable drawer */}
+			<Drawer open={open && isMobile} onOpenChange={onOpenChange}>
+				<DrawerContent>
+					<DrawerHeader className="text-left">
+						<DrawerTitle className="text-xl font-semibold leading-tight pr-8">
 							{name}
-						</SheetTitle>
-						<SheetDescription>
+						</DrawerTitle>
+						<DrawerDescription>
 							<StatusBadge
 								availability={location.availability}
 								timezone={location.timezone}
 								variant="text"
 							/>
-						</SheetDescription>
-					</SheetHeader>
+						</DrawerDescription>
+					</DrawerHeader>
 					<div className="px-6 pb-6">{detailBody}</div>
-				</SheetContent>
-			</Sheet>
+				</DrawerContent>
+			</Drawer>
 
 			{/* Desktop: centered dialog */}
 			<Dialog open={open && !isMobile} onOpenChange={onOpenChange}>

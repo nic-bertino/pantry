@@ -10,25 +10,6 @@ import {
 } from "vitest";
 import { LocationInput } from "./location-input";
 
-// Mock motion — render children immediately without animation
-vi.mock("motion/react", () => ({
-	AnimatePresence: ({ children }: { children: React.ReactNode }) => (
-		<>{children}</>
-	),
-	motion: {
-		div: ({
-			children,
-			initial: _i,
-			animate: _a,
-			exit: _e,
-			transition: _t,
-			...rest
-		}: React.ComponentProps<"div"> & Record<string, unknown>) => (
-			<div {...rest}>{children}</div>
-		),
-	},
-}));
-
 // Mock translations — return key as-is for easy assertions
 vi.mock("@/lib/i18n/use-translations", () => ({
 	useTranslations: () => ({
