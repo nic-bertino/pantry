@@ -55,7 +55,7 @@ export const LocationCard = memo(function LocationCard({ location, onClick }: Lo
 			{/* Mobile: Card layout */}
 			<button
 				type="button"
-				className="sm:hidden w-full text-left rounded-lg border border-border bg-card p-4 hover:bg-muted active:bg-muted transition-colors"
+				className="sm:hidden w-full text-left rounded-lg bg-card p-4 hover:bg-muted active:bg-muted transition-colors"
 				onClick={onClick}
 			>
 				<div className="flex items-baseline justify-between gap-3">

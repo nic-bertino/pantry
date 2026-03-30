@@ -66,9 +66,9 @@
  */
 
 :root {
-  --background: oklch(0.975 0.015 165);
+  --background: oklch(0.950 0.022 165);
   --foreground: oklch(0.208 0.010 165);
-  --card: oklch(0.985 0.022 165);
+  --card: oklch(1 0 0);
   --card-foreground: oklch(0.208 0.010 165);
   --popover: oklch(0.985 0.022 165);
   --popover-foreground: oklch(0.208 0.010 165);
@@ -151,3 +151,4 @@
     @apply bg-background text-foreground;
   }
 }
+
