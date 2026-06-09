@@ -8,6 +8,7 @@ import {
 	vi,
 	type Mock,
 } from "vitest";
+import type { ComponentProps } from "react";
 import { LocationInput } from "./location-input";
 
 // Mock translations — return key as-is for easy assertions
@@ -35,13 +36,13 @@ vi.mock("@/lib/geo/zip-lookup", () => ({
 	},
 }));
 
-const defaultProps = {
+const defaultProps: ComponentProps<typeof LocationInput> = {
 	coordinates: null,
-	source: null as "browser" | "zip" | null,
-	zipCode: null as string | null,
-	permissionState: "prompt" as const,
+	source: null,
+	zipCode: null,
+	permissionState: "prompt",
 	isLoading: false,
-	error: null as string | null,
+	error: null,
 	onRequestBrowserLocation: vi.fn(),
 	onSetZipLocation: vi.fn(),
 	onClearLocation: vi.fn(),
