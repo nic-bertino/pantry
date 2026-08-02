@@ -15,7 +15,8 @@ export function Header() {
 	const toggleLocale = () => {
 		const newLocale: Locale = locale === "en" ? "es" : "en";
 		const newPath = pathname.replace(`/${locale}`, `/${newLocale}`);
-		router.push(newPath);
+		// Keep filter/region params so switching language doesn't reset the view
+		router.push(`${newPath}${window.location.search}`);
 	};
 
 	return (

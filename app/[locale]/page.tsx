@@ -1,6 +1,7 @@
 "use client";
 
 import { Suspense, useEffect, useMemo, useState } from "react";
+import { useSearchParams } from "next/navigation";
 import {
 	FilterChips,
 	filterByDistanceRing,
@@ -17,11 +18,51 @@ import { useRegion } from "@/hooks/use-region";
 import { useTranslations } from "@/lib/i18n/use-translations";
 import type { TimeFilter } from "@/lib/types/location";
 
+const TIME_FILTERS: TimeFilter[] = [
+	"open-now",
+	"today",
+	"tomorrow",
+	"this-week",
+];
+
+function parseFilterParam(value: string | null): TimeFilter {
+	return TIME_FILTERS.includes(value as TimeFilter)
+		? (value as TimeFilter)
+		: "open-now";
+}
+
+function parseDistParam(value: string | null): DistanceRing {
+	if (value === "5") return "within5";
+	if (value === "10") return "within10";
+	return null;
+}
+
 function FinderContent() {
 	const { t, locale } = useTranslations();
-	const [filter, setFilter] = useState<TimeFilter>("open-now");
-	const [distanceFilter, setDistanceFilter] = useState<DistanceRing>(null);
+	const searchParams = useSearchParams();
+	const [filter, setFilter] = useState<TimeFilter>(() =>
+		parseFilterParam(searchParams?.get("filter") ?? null),
+	);
+	const [distanceFilter, setDistanceFilter] = useState<DistanceRing>(() =>
+		parseDistParam(searchParams?.get("dist") ?? null),
+	);
 	const region = useRegion();
+
+	// Reflect filters in the URL so refreshes, shared links, and the
+	// language switch keep the current view
+	useEffect(() => {
+		const params = new URLSearchParams(window.location.search);
+		if (filter === "open-now") params.delete("filter");
+		else params.set("filter", filter);
+		if (distanceFilter === "within5") params.set("dist", "5");
+		else if (distanceFilter === "within10") params.set("dist", "10");
+		else params.delete("dist");
+		const query = params.toString();
+		const next = `${window.location.pathname}${query ? `?${query}` : ""}`;
+		if (next !== `${window.location.pathname}${window.location.search}`) {
+			window.history.replaceState(null, "", next);
+		}
+	}, [filter, distanceFilter]);
 
 	// Keep <html lang> in sync with current locale
 	useEffect(() => {
@@ -44,6 +85,7 @@ function FinderContent() {
 		filter,
 		userCoordinates: coordinates,
 		region: region.id,
+		distanceRing: distanceFilter,
 	});
 
 	// Apply distance radius filter
@@ -107,6 +149,11 @@ function FinderContent() {
 					locations={filteredLocations}
 					filter={filter}
 					isLoading={locationsLoading}
+					counts={counts}
+					onFilterChange={setFilter}
+					distanceFilter={distanceFilter}
+					onClearDistance={() => setDistanceFilter(null)}
+					hiddenByDistance={distanceFilter ? locations.length : 0}
 				/>
 			</main>
 

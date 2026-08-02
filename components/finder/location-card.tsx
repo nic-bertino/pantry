@@ -31,7 +31,9 @@ export const LocationCard = memo(function LocationCard({ location, onClick }: Lo
 					<h3 className="font-medium truncate">{name}</h3>
 					<p className="text-sm text-muted-foreground">
 						{hasRequirements && (
-							<span className="text-caution-foreground mr-1.5" title={t("hasRequirements")}>●</span>
+							<span className="text-caution-foreground">
+								{t("hasRequirements")} ·{" "}
+							</span>
 						)}
 						{location.city}
 						{location.distance !== undefined && (
@@ -64,7 +66,9 @@ export const LocationCard = memo(function LocationCard({ location, onClick }: Lo
 				</div>
 				<p className="mt-0.5 text-sm text-muted-foreground">
 					{hasRequirements && (
-						<span className="text-caution-foreground mr-1.5" title={t("hasRequirements")}>●</span>
+						<span className="text-caution-foreground">
+							{t("hasRequirements")} ·{" "}
+						</span>
 					)}
 					{location.city}
 					{location.distance !== undefined && (
