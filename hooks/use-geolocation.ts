@@ -11,6 +11,51 @@ interface Coordinates {
 	lng: number;
 }
 
+const ZIP_STORAGE_KEY = "pantry-zip-location";
+
+function loadSavedZipLocation(): {
+	zip: string;
+	coordinates: Coordinates;
+} | null {
+	try {
+		const raw = window.localStorage.getItem(ZIP_STORAGE_KEY);
+		if (!raw) return null;
+		const parsed = JSON.parse(raw);
+		if (
+			typeof parsed?.zip === "string" &&
+			typeof parsed?.lat === "number" &&
+			typeof parsed?.lng === "number"
+		) {
+			return {
+				zip: parsed.zip,
+				coordinates: { lat: parsed.lat, lng: parsed.lng },
+			};
+		}
+	} catch {
+		// Storage unavailable or corrupted — fall through to no saved location
+	}
+	return null;
+}
+
+function saveZipLocation(zip: string, coordinates: Coordinates) {
+	try {
+		window.localStorage.setItem(
+			ZIP_STORAGE_KEY,
+			JSON.stringify({ zip, lat: coordinates.lat, lng: coordinates.lng }),
+		);
+	} catch {
+		// Storage unavailable — location just won't persist
+	}
+}
+
+function clearSavedZipLocation() {
+	try {
+		window.localStorage.removeItem(ZIP_STORAGE_KEY);
+	} catch {
+		// Storage unavailable
+	}
+}
+
 type LocationSource = "browser" | "zip" | null;
 
 interface GeolocationState {
@@ -98,6 +143,22 @@ export function useGeolocation() {
 		);
 	}, []);
 
+	// Restore a previously saved ZIP location so returning visitors don't
+	// have to re-enter it. Browser geolocation (if granted) overrides it.
+	useEffect(() => {
+		const saved = loadSavedZipLocation();
+		if (!saved) return;
+		setState((prev) => {
+			if (prev.coordinates) return prev;
+			return {
+				...prev,
+				coordinates: saved.coordinates,
+				source: "zip",
+				zipCode: saved.zip,
+			};
+		});
+	}, []);
+
 	// Check if permission was previously granted on mount
 	useEffect(() => {
 		if (typeof window === "undefined" || !navigator.geolocation) {
@@ -125,6 +186,7 @@ export function useGeolocation() {
 	}, [requestPosition]);
 
 	const clearLocation = useCallback(() => {
+		clearSavedZipLocation();
 		setState((prev) => ({
 			...prev,
 			coordinates: null,
@@ -135,6 +197,7 @@ export function useGeolocation() {
 
 	const setZipLocation = useCallback(
 		(zip: string, coordinates: Coordinates) => {
+			saveZipLocation(zip, coordinates);
 			setState((prev) => ({
 				...prev,
 				coordinates,

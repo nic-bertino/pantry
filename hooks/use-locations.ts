@@ -23,6 +23,8 @@ interface UseLocationsOptions {
 	filter: TimeFilter;
 	userCoordinates?: { lat: number; lng: number } | null;
 	region?: Region;
+	/** Active distance radius — when set, counts only include locations within it */
+	distanceRing?: "within5" | "within10" | null;
 }
 
 /**
@@ -48,7 +50,7 @@ function calculateDistance(
 	return R * c;
 }
 
-export function useLocations({ filter, userCoordinates, region = "san-diego" }: UseLocationsOptions) {
+export function useLocations({ filter, userCoordinates, region = "san-diego", distanceRing = null }: UseLocationsOptions) {
 	const [rawLocations, setRawLocations] = useState<FoodLocation[]>([]);
 	const [isLoading, setIsLoading] = useState(true);
 	const now = useMemo(() => new Date(), []);
@@ -92,11 +94,19 @@ export function useLocations({ filter, userCoordinates, region = "san-diego" }: 
 				);
 			}
 
-			// Count for each filter in single pass
-			if (isOpenNow(loc.schedule, now, loc.timezone)) counts["open-now"]++;
-			if (isOpenToday(loc.schedule, now, loc.timezone)) counts.today++;
-			if (isOpenTomorrow(loc.schedule, now, loc.timezone)) counts.tomorrow++;
-			if (isOpenThisWeek(loc.schedule, now, loc.timezone)) counts["this-week"]++;
+			// Count for each filter in single pass, respecting the distance ring
+			// so chip counts always match what the list can actually show
+			const withinRing =
+				!distanceRing ||
+				(distance !== undefined &&
+					distance < (distanceRing === "within5" ? 5 : 10));
+			if (withinRing) {
+				if (isOpenNow(loc.schedule, now, loc.timezone)) counts["open-now"]++;
+				if (isOpenToday(loc.schedule, now, loc.timezone)) counts.today++;
+				if (isOpenTomorrow(loc.schedule, now, loc.timezone)) counts.tomorrow++;
+				if (isOpenThisWeek(loc.schedule, now, loc.timezone))
+					counts["this-week"]++;
+			}
 
 			return {
 				...loc,
@@ -106,7 +116,7 @@ export function useLocations({ filter, userCoordinates, region = "san-diego" }: 
 		});
 
 		return { displayLocations, counts };
-	}, [rawLocations, now, userCoordinates]);
+	}, [rawLocations, now, userCoordinates, distanceRing]);
 
 	// Filter based on time filter
 	const filteredLocations = useMemo(() => {

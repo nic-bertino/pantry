@@ -100,7 +100,12 @@
 		"enableInSettings": "Enable in browser settings",
 		"locationUnavailable": "Location unavailable",
 		"locationTimedOut": "Location request timed out",
-		"locationDenied": "Location permission denied"
+		"locationDenied": "Location permission denied",
+		"nothingWithinDistance": "Nothing within {miles} miles",
+		"clearDistanceFilter": "Clear distance filter",
+		"seeOpenToday": "See {count} open today",
+		"seeOpenTomorrow": "See {count} open tomorrow",
+		"seeOpenThisWeek": "See {count} open this week"
 	},
 	"es": {
 		"skipToContent": "Saltar al contenido principal",
@@ -203,6 +208,11 @@
 		"enableInSettings": "Habilitar en ajustes del navegador",
 		"locationUnavailable": "Ubicación no disponible",
 		"locationTimedOut": "Tiempo de espera agotado",
-		"locationDenied": "Permiso de ubicación denegado"
+		"locationDenied": "Permiso de ubicación denegado",
+		"nothingWithinDistance": "No hay lugares a menos de {miles} millas",
+		"clearDistanceFilter": "Quitar filtro de distancia",
+		"seeOpenToday": "Ver {count} abiertos hoy",
+		"seeOpenTomorrow": "Ver {count} abiertos mañana",
+		"seeOpenThisWeek": "Ver {count} abiertos esta semana"
 	}
 }

@@ -1,5 +1,6 @@
 "use client";
 
+import { useEffect, useRef } from "react";
 import { approximateCount } from "@/lib/format/count";
 import { useTranslations } from "@/lib/i18n/use-translations";
 import type { TimeFilter } from "@/lib/types/location";
@@ -22,6 +23,19 @@ export function TimeFilterBar({
 	distanceChips,
 }: TimeFilterBarProps) {
 	const { t, locale } = useTranslations();
+	const scrollerRef = useRef<HTMLDivElement>(null);
+
+	// Keep the active chip visible in the horizontal scroller on small screens
+	useEffect(() => {
+		const active = scrollerRef.current?.querySelector(
+			'[aria-pressed="true"]',
+		);
+		active?.scrollIntoView({
+			behavior: "smooth",
+			block: "nearest",
+			inline: "nearest",
+		});
+	}, [activeFilter]);
 
 	const filterLabels: Record<TimeFilter, string> = {
 		"open-now": t("filterOpenNow"),
@@ -37,6 +51,7 @@ export function TimeFilterBar({
 		>
 			<div className="container mx-auto px-4 py-2">
 				<div
+					ref={scrollerRef}
 					className="flex items-center gap-1 overflow-x-auto scrollbar-hide"
 					role="toolbar"
 				>
@@ -48,8 +63,7 @@ export function TimeFilterBar({
 					{FILTERS.map((filter) => {
 						const isActive = activeFilter === filter;
 						const count = counts?.[filter];
-
-						if (!isActive && count === 0) return null;
+						const isEmpty = !isActive && count === 0;
 
 						return (
 							<button
@@ -60,11 +74,13 @@ export function TimeFilterBar({
 								className={
 									isActive
 										? "shrink-0 inline-flex items-center gap-1.5 rounded-full border border-primary bg-primary px-4 py-2 text-sm font-medium text-primary-foreground transition-colors"
-										: "shrink-0 inline-flex items-center gap-1.5 rounded-full border border-border px-4 py-2 text-sm text-muted-foreground hover:text-foreground hover:bg-muted/50 active:bg-muted transition-colors"
+										: isEmpty
+											? "shrink-0 inline-flex items-center gap-1.5 rounded-full border border-border/60 px-4 py-2 text-sm text-muted-foreground/50 hover:text-muted-foreground hover:bg-muted/50 transition-colors"
+											: "shrink-0 inline-flex items-center gap-1.5 rounded-full border border-border px-4 py-2 text-sm text-muted-foreground hover:text-foreground hover:bg-muted/50 active:bg-muted transition-colors"
 								}
 							>
 								{filterLabels[filter]}
-								{count !== undefined && count > 0 && (
+								{count !== undefined && (
 									<span className="font-normal tabular-nums opacity-50">
 										{approximateCount(count)}
 									</span>

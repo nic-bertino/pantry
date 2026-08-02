@@ -5,6 +5,7 @@ import type { DisplayLocation, TimeFilter } from "@/lib/types/location";
 import { approximateCount } from "@/lib/format/count";
 import { useTranslations } from "@/lib/i18n/use-translations";
 import { EmptyState } from "./empty-state";
+import type { DistanceRing } from "./filter-chips";
 import { LocationCard } from "./location-card";
 import { LocationDetailSheet } from "./location-detail-sheet";
 
@@ -28,6 +29,11 @@ interface LocationListProps {
 	filter: TimeFilter;
 	isLoading?: boolean;
 	geoPromptSlot?: React.ReactNode;
+	counts?: Record<TimeFilter, number>;
+	onFilterChange?: (filter: TimeFilter) => void;
+	distanceFilter?: DistanceRing;
+	onClearDistance?: () => void;
+	hiddenByDistance?: number;
 }
 
 export function LocationList({
@@ -35,6 +41,11 @@ export function LocationList({
 	filter,
 	isLoading,
 	geoPromptSlot,
+	counts,
+	onFilterChange,
+	distanceFilter,
+	onClearDistance,
+	hiddenByDistance,
 }: LocationListProps) {
 	const { t } = useTranslations();
 	const [selectedLocation, setSelectedLocation] =
@@ -78,9 +89,14 @@ export function LocationList({
 
 	if (locations.length === 0) {
 		return (
-			<>
-				<EmptyState filter={filter} />
-			</>
+			<EmptyState
+				filter={filter}
+				counts={counts}
+				onFilterChange={onFilterChange}
+				distanceFilter={distanceFilter}
+				onClearDistance={onClearDistance}
+				hiddenByDistance={hiddenByDistance}
+			/>
 		);
 	}
 
