@@ -1,6 +1,7 @@
 import { act, renderHook, waitFor } from "@testing-library/react";
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
-import { useLocations } from "./use-locations";
+import type { DisplayLocation } from "@/lib/types/location";
+import { groupLocations, useLocations } from "./use-locations";
 
 vi.mock("@/lib/data/locations.json", () => ({
 	default: [
@@ -264,5 +265,116 @@ describe("useLocations", () => {
 		expect(result.current.counts.tomorrow).toBe(0);
 		// This week includes Tue + Wed, so all 3 visible should be open this week
 		expect(result.current.counts["this-week"]).toBe(3);
+	});
+
+	it("groups this week by day, with sessions that match the group", async () => {
+		const { result } = renderHook(() =>
+			useLocations({ filter: "this-week" }),
+		);
+
+		await waitForLoad(result);
+
+		// Wed 10 AM: Wed 9-12 sites are open now; the Tue site is next Tuesday
+		const groups = result.current.groups;
+		expect(groups.map((g) => g.key)).toEqual(["open-now", "day-6"]);
+		expect(groups[0].locations.map((l) => l.id).sort()).toEqual(["loc-1", "loc-4"]);
+		expect(groups[1].locations[0].id).toBe("loc-2");
+		expect(groups[1].locations[0].session?.dayOffset).toBe(6);
+	});
+
+	it("attaches tomorrow's session under the tomorrow filter", async () => {
+		// Tue 10 AM: loc-1 and loc-4 (Wed) are tomorrow, loc-2 (Tue) is open now
+		vi.setSystemTime(new Date("2024-01-02T18:00:00Z"));
+		const { result } = renderHook(() => useLocations({ filter: "tomorrow" }));
+
+		await waitForLoad(result);
+
+		expect(result.current.locations.map((l) => l.id).sort()).toEqual(["loc-1", "loc-4"]);
+		expect(result.current.locations.every((l) => l.session?.dayOffset === 1)).toBe(true);
+	});
+
+	it("applies the distance ring to counts and results", async () => {
+		// loc-1 is ~0 mi from the user, loc-2 ~3 mi; loc-4 has no coordinates
+		const { result } = renderHook(() =>
+			useLocations({
+				filter: "this-week",
+				userCoordinates: { lat: 32.72, lng: -117.16 },
+				distanceRing: "within5",
+			}),
+		);
+
+		await waitForLoad(result);
+
+		expect(result.current.locations.map((l) => l.id).sort()).toEqual(["loc-1", "loc-2"]);
+		expect(result.current.counts["open-now"]).toBe(1);
+		expect(result.current.counts["this-week"]).toBe(2);
+		// The unfiltered list stays available for the distance chips
+		expect(result.current.allLocations).toHaveLength(3);
+		// ...and unfiltered counts let the empty state blame the ring
+		expect(result.current.unfilteredCounts["open-now"]).toBe(2);
+	});
+
+	it("refreshes the clock so open-now results don't go stale", async () => {
+		// Wed 11:59 AM: Wed 9-12 sites are open
+		vi.setSystemTime(new Date("2024-01-03T19:59:00Z"));
+		const { result } = renderHook(() => useLocations({ filter: "open-now" }));
+
+		await waitForLoad(result);
+		expect(result.current.locations).toHaveLength(2);
+
+		await act(async () => {
+			vi.advanceTimersByTime(60_000);
+		});
+		expect(result.current.locations).toHaveLength(0);
+	});
+
+	it("suggests upcoming sessions for empty states", async () => {
+		// Wed 1 PM: everything has closed for the day
+		vi.setSystemTime(new Date("2024-01-03T21:00:00Z"));
+		const { result } = renderHook(() => useLocations({ filter: "open-now" }));
+
+		await waitForLoad(result);
+
+		expect(result.current.locations).toHaveLength(0);
+		// Tuesday comes before next Wednesday
+		expect(result.current.nextUp[0].id).toBe("loc-2");
+	});
+});
+
+describe("groupLocations", () => {
+	const now = new Date("2024-01-03T18:00:00Z");
+
+	function located(id: string, distance: number, opensInHours: number): DisplayLocation {
+		const opensAt = new Date(now.getTime() + opensInHours * 3600000);
+		return {
+			id,
+			name: { en: id, es: id },
+			timezone: "America/Los_Angeles",
+			distance,
+			session: {
+				opensAt,
+				closesAt: new Date(opensAt.getTime() + 3600000),
+				dayOffset: 0,
+			},
+		} as DisplayLocation;
+	}
+
+	it("sorts strictly by distance within a group when location is set", () => {
+		// Distances 0.05 mi apart used to fall in a dead zone and sort by time instead
+		const groups = groupLocations(
+			[located("far", 1.5, 2), located("near", 1.45, 3), located("nearest", 0.4, 4)],
+			now,
+			true,
+		);
+		expect(groups[0].locations.map((l) => l.id)).toEqual(["nearest", "near", "far"]);
+	});
+
+	it("sorts by start time when no location is set", () => {
+		const groups = groupLocations(
+			[located("late", 0.4, 4), located("soon", 1.5, 2)],
+			now,
+			false,
+		);
+		expect(groups[0].locations.map((l) => l.id)).toEqual(["soon", "late"]);
 	});
 });

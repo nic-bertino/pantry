@@ -2,90 +2,78 @@
 
 import { memo } from "react";
 import { ChevronRightIcon } from "lucide-react";
+import { describeSession, type SessionLabel } from "@/lib/format/session";
 import { useTranslations } from "@/lib/i18n/use-translations";
 import type { DisplayLocation } from "@/lib/types/location";
-import { StatusBadge } from "./status-badge";
+import { RequirementTag } from "./requirement-tag";
+import { SessionStatus } from "./session-status";
 
 interface LocationCardProps {
 	location: DisplayLocation;
+	now: Date;
+	/**
+	 * `compact` omits the day because the card sits under a day heading;
+	 * `full` names it, for cards shown outside a grouped list.
+	 */
+	statusMode?: "compact" | "full";
+	/** Card sits under an "Open now" heading, so the status can drop "Open" */
+	underOpenHeading?: boolean;
 	onClick?: () => void;
 }
 
-export const LocationCard = memo(function LocationCard({ location, onClick }: LocationCardProps) {
-	const { t, tBilingual } = useTranslations();
+export const LocationCard = memo(function LocationCard({
+	location,
+	now,
+	statusMode = "compact",
+	underOpenHeading = false,
+	onClick,
+}: LocationCardProps) {
+	const { t, tBilingual, locale } = useTranslations();
 
 	const name = tBilingual(location.name);
+	const eligibility = tBilingual(location.eligibility);
+	const label: SessionLabel = location.session
+		? describeSession(location.session, now, location.timezone, {
+				t,
+				locale,
+				mode: statusMode,
+				underOpenHeading,
+			})
+		: { tone: "later", text: t("callForHours") };
 
-	// Check if location has requirements
-	const hasRequirements = location.eligibility !== null;
-
+	// The heading holds the only interactive element; its ::after stretches
+	// over the card so the whole surface is clickable without nesting block
+	// content inside a <button>.
 	return (
-		<article className="group">
-			{/* Desktop: Row — name/city left, status + chevron right */}
-			<button
-				type="button"
-				className="hidden w-full text-left sm:flex sm:items-center sm:gap-4 sm:py-3 sm:px-2 sm:cursor-pointer sm:rounded-lg hover:bg-muted transition-colors"
-				onClick={onClick}
-			>
-				<div className="min-w-0 flex-1">
-					<h3 className="font-medium truncate">{name}</h3>
-					<p className="text-sm text-muted-foreground">
-						{hasRequirements && (
-							<span className="text-caution-foreground">
-								{t("hasRequirements")} ·{" "}
-							</span>
-						)}
+		<article className="relative flex items-start gap-3 rounded-lg bg-card p-4 transition-colors hover:bg-muted has-[button:active]:bg-muted has-[button:focus-visible]:ring-2 has-[button:focus-visible]:ring-ring sm:py-3">
+			<div className="min-w-0 flex-1">
+				<h3 className="font-medium leading-snug">
+					<button
+						type="button"
+						onClick={onClick}
+						className="line-clamp-2 text-left outline-none after:absolute after:inset-0 after:rounded-lg"
+					>
+						{name}
+					</button>
+				</h3>
+				<p className="mt-1 flex flex-wrap items-center gap-x-3 gap-y-0.5 text-sm">
+					<SessionStatus label={label} />
+					<span className="text-muted-foreground">
 						{location.city}
-						{location.distance !== undefined && (
-							<span>
-								{" "}
-								· {t("milesAway", { miles: location.distance.toFixed(1) })}
-							</span>
-						)}
-					</p>
-				</div>
-				<span className="shrink-0 flex items-center gap-1.5 text-muted-foreground">
-					<StatusBadge
-						availability={location.availability}
-						timezone={location.timezone}
-						variant="text"
-					/>
-					<ChevronRightIcon className="h-4 w-4" />
-				</span>
-			</button>
-
-			{/* Mobile: Card layout */}
-			<button
-				type="button"
-				className="sm:hidden w-full text-left rounded-lg bg-card p-4 hover:bg-muted active:bg-muted transition-colors"
-				onClick={onClick}
-			>
-				<div className="flex items-baseline justify-between gap-3">
-					<h3 className="font-medium leading-tight truncate">{name}</h3>
-					<ChevronRightIcon className="h-4 w-4 shrink-0 text-muted-foreground translate-y-0.5" />
-				</div>
-				<p className="mt-0.5 text-sm text-muted-foreground">
-					{hasRequirements && (
-						<span className="text-caution-foreground">
-							{t("hasRequirements")} ·{" "}
-						</span>
-					)}
-					{location.city}
-					{location.distance !== undefined && (
-						<span>
-							{" "}
-							· {t("milesAway", { miles: location.distance.toFixed(1) })}
-						</span>
-					)}
-					<span className="ml-2">
-						<StatusBadge
-							availability={location.availability}
-							timezone={location.timezone}
-							variant="text"
-						/>
+						{location.distance !== undefined &&
+							` · ${t("milesAway", { miles: location.distance.toFixed(1) })}`}
 					</span>
 				</p>
-			</button>
+				{eligibility && (
+					<p className="mt-2 flex">
+						<RequirementTag text={eligibility} />
+					</p>
+				)}
+			</div>
+			<ChevronRightIcon
+				aria-hidden="true"
+				className="mt-1 h-4 w-4 shrink-0 text-muted-foreground"
+			/>
 		</article>
 	);
 });

@@ -2,9 +2,9 @@
 
 import { useMemo } from "react";
 import { useTranslations } from "@/lib/i18n/use-translations";
+import type { DistanceRing } from "@/lib/geo/distance-ring";
 import type { DisplayLocation } from "@/lib/types/location";
-
-export type DistanceRing = "within5" | "within10" | null;
+import { chipClassName } from "./time-filter-bar";
 
 interface FilterChipsProps {
 	locations: DisplayLocation[];
@@ -45,11 +45,7 @@ export function FilterChips({
 						type="button"
 						onClick={() => onDistanceChange(isActive ? null : ring)}
 						aria-pressed={isActive}
-						className={
-							isActive
-								? "shrink-0 inline-flex items-center gap-1.5 rounded-full border border-primary bg-primary px-4 py-2 text-sm font-medium text-primary-foreground transition-colors"
-								: "shrink-0 inline-flex items-center gap-1.5 rounded-full border border-border px-4 py-2 text-sm text-muted-foreground hover:text-foreground hover:bg-muted/50 active:bg-muted transition-colors"
-						}
+						className={chipClassName(isActive)}
 					>
 						{label}
 					</button>
@@ -57,26 +53,4 @@ export function FilterChips({
 			})}
 		</>
 	);
-}
-
-/**
- * Filter locations by distance radius (inclusive — everything within X miles)
- */
-export function filterByDistanceRing(
-	locations: DisplayLocation[],
-	ring: DistanceRing,
-): DisplayLocation[] {
-	if (!ring) return locations;
-
-	return locations.filter((location) => {
-		if (location.distance === undefined) return false;
-		switch (ring) {
-			case "within5":
-				return location.distance < 5;
-			case "within10":
-				return location.distance < 10;
-			default:
-				return true;
-		}
-	});
 }

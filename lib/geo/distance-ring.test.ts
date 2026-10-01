@@ -1,6 +1,6 @@
 import { describe, expect, it } from "vitest";
 import type { DisplayLocation } from "@/lib/types/location";
-import { filterByDistanceRing } from "./filter-chips";
+import { filterByDistanceRing } from "./distance-ring";
 
 // Minimal DisplayLocation factory — only fields the filter reads
 function makeLocation(

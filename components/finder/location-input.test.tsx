@@ -380,6 +380,15 @@ describe("LocationInput", () => {
 			expect(screen.queryByText("useMyLocation")).toBeNull();
 		});
 
+		it("explains why location is unavailable when permission is denied", () => {
+			renderInput({ permissionState: "denied" });
+
+			fireEvent.click(screen.getByText("setLocation"));
+
+			expect(screen.getByText("locationBlocked")).toBeTruthy();
+			expect(screen.getByText("locationBlockedDesc")).toBeTruthy();
+		});
+
 		it("shows browser option when permission is prompt", () => {
 			renderInput({ permissionState: "prompt" });
 

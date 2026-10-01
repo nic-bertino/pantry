@@ -87,11 +87,21 @@ export type AvailabilityStatus =
 	| { status: "unknown" };
 
 /**
+ * A single distribution window, resolved to concrete instants
+ */
+export interface Session {
+	opensAt: Date;
+	closesAt: Date;
+	dayOffset: number; // Calendar days from today in the location's timezone
+}
+
+/**
  * Location with computed fields for display
  */
 export interface DisplayLocation extends FoodLocation {
 	availability: AvailabilityStatus;
 	distance?: number; // Miles from user
+	session?: Session | null; // Session matching the active time filter
 }
 
 /**

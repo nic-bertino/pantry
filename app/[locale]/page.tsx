@@ -1,12 +1,8 @@
 "use client";
 
-import { Suspense, useEffect, useMemo, useState } from "react";
+import { Suspense, useEffect, useState } from "react";
 import { useSearchParams } from "next/navigation";
-import {
-	FilterChips,
-	filterByDistanceRing,
-	type DistanceRing,
-} from "@/components/finder/filter-chips";
+import { FilterChips } from "@/components/finder/filter-chips";
 import { Footer } from "@/components/finder/footer";
 import { Header } from "@/components/finder/header";
 import { LocationInput } from "@/components/finder/location-input";
@@ -15,6 +11,7 @@ import { TimeFilterBar } from "@/components/finder/time-filter-bar";
 import { useGeolocation } from "@/hooks/use-geolocation";
 import { useLocations } from "@/hooks/use-locations";
 import { useRegion } from "@/hooks/use-region";
+import type { DistanceRing } from "@/lib/geo/distance-ring";
 import { useTranslations } from "@/lib/i18n/use-translations";
 import type { TimeFilter } from "@/lib/types/location";
 
@@ -81,42 +78,22 @@ function FinderContent() {
 		setZipLocation,
 	} = useGeolocation();
 
-	const { locations, counts, isLoading: locationsLoading } = useLocations({
+	const {
+		locations,
+		allLocations,
+		groups,
+		unknown,
+		nextUp,
+		counts,
+		unfilteredCounts,
+		now,
+		isLoading: locationsLoading,
+	} = useLocations({
 		filter,
 		userCoordinates: coordinates,
-		region: region.id,
 		distanceRing: distanceFilter,
+		region: region.id,
 	});
-
-	// Apply distance radius filter
-	const filteredLocations = useMemo(
-		() => filterByDistanceRing(locations, distanceFilter),
-		[locations, distanceFilter],
-	);
-
-	// Location input element
-	const locationInputElement = (
-		<LocationInput
-			coordinates={coordinates}
-			source={locationSource}
-			zipCode={zipCode}
-			permissionState={permissionState}
-			isLoading={geoLoading}
-			error={geoError}
-			onRequestBrowserLocation={requestPermission}
-			onSetZipLocation={setZipLocation}
-			onClearLocation={clearLocation}
-		/>
-	);
-
-	// Distance chips element (self-hides when no distance data)
-	const distanceChipsElement = (
-		<FilterChips
-			locations={locations}
-			distanceFilter={distanceFilter}
-			onDistanceChange={setDistanceFilter}
-		/>
-	);
 
 	const isDevRegion = region.id !== "san-diego";
 
@@ -134,26 +111,48 @@ function FinderContent() {
 				</div>
 			)}
 			<Header />
+			{/* Where: scrolls away with the page */}
+			<div className="container mx-auto flex max-w-3xl items-center gap-1 overflow-x-auto px-4 pt-3 scrollbar-hide">
+				<LocationInput
+					coordinates={coordinates}
+					source={locationSource}
+					zipCode={zipCode}
+					permissionState={permissionState}
+					isLoading={geoLoading}
+					error={geoError}
+					onRequestBrowserLocation={requestPermission}
+					onSetZipLocation={setZipLocation}
+					onClearLocation={clearLocation}
+				/>
+				{/* Distance chips self-hide when there's no distance data */}
+				<FilterChips
+					locations={allLocations}
+					distanceFilter={distanceFilter}
+					onDistanceChange={setDistanceFilter}
+				/>
+			</div>
+			{/* When: stays pinned while browsing */}
 			<div className="sticky top-0 z-40 bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
 				<TimeFilterBar
 					activeFilter={filter}
 					onFilterChange={setFilter}
 					counts={counts}
-					locationInput={locationInputElement}
-					distanceChips={distanceChipsElement}
 				/>
 			</div>
 
 			<main id="main-content">
 				<LocationList
-					locations={filteredLocations}
+					groups={groups}
+					unknown={unknown}
+					nextUp={nextUp}
 					filter={filter}
-					isLoading={locationsLoading}
-					counts={counts}
-					onFilterChange={setFilter}
 					distanceFilter={distanceFilter}
+					counts={counts}
+					unfilteredCounts={unfilteredCounts}
+					now={now}
+					isLoading={locationsLoading}
+					onFilterChange={setFilter}
 					onClearDistance={() => setDistanceFilter(null)}
-					hiddenByDistance={distanceFilter ? locations.length : 0}
 				/>
 			</main>
 

@@ -1,19 +1,15 @@
 "use client";
 
 import { Button } from "@/components/ui/button";
+import { approximateCount } from "@/lib/format/count";
+import { type DistanceRing, RING_MILES } from "@/lib/geo/distance-ring";
 import { useTranslations } from "@/lib/i18n/use-translations";
-import type { TimeFilter } from "@/lib/types/location";
-import type { DistanceRing } from "./filter-chips";
+import type { DisplayLocation, TimeFilter } from "@/lib/types/location";
+import { cn } from "@/lib/utils";
+import { LocationCard } from "./location-card";
 
-interface EmptyStateProps {
-	filter: TimeFilter;
-	counts?: Record<TimeFilter, number>;
-	onFilterChange?: (filter: TimeFilter) => void;
-	distanceFilter?: DistanceRing;
-	onClearDistance?: () => void;
-	/** Locations the active time filter matched before distance filtering */
-	hiddenByDistance?: number;
-}
+/** How many upcoming sessions to suggest */
+const SUGGESTION_COUNT = 3;
 
 // Later time windows a user can fall forward to from each filter
 const FALL_FORWARD: Record<TimeFilter, TimeFilter[]> = {
@@ -29,34 +25,53 @@ const CTA_KEYS = {
 	"this-week": "seeOpenThisWeek",
 } as const;
 
+interface EmptyStateProps {
+	filter: TimeFilter;
+	distanceFilter: DistanceRing;
+	/** Per-filter counts within the active distance ring */
+	counts: Record<TimeFilter, number>;
+	/** Per-filter counts ignoring the distance ring */
+	unfilteredCounts: Record<TimeFilter, number>;
+	/** Upcoming sessions in start order */
+	nextUp: DisplayLocation[];
+	now: Date;
+	onSelect: (location: DisplayLocation) => void;
+	onFilterChange: (filter: TimeFilter) => void;
+	onClearDistance: () => void;
+}
+
 export function EmptyState({
 	filter,
-	counts,
-	onFilterChange,
 	distanceFilter,
+	counts,
+	unfilteredCounts,
+	nextUp,
+	now,
+	onSelect,
+	onFilterChange,
 	onClearDistance,
-	hiddenByDistance = 0,
 }: EmptyStateProps) {
 	const { t } = useTranslations();
+	const suggestions = nextUp.slice(0, SUGGESTION_COUNT);
+	const hasSuggestions = suggestions.length > 0;
 
-	// The distance ring, not the time filter, emptied the list
-	if (distanceFilter && hiddenByDistance > 0) {
-		const miles = distanceFilter === "within5" ? 5 : 10;
-		return (
-			<div className="flex flex-col items-center justify-center py-16 text-center px-4">
-				<h3 className="font-semibold">
-					{t("nothingWithinDistance", { miles })}
-				</h3>
-				{onClearDistance && (
-					<Button className="mt-4" onClick={onClearDistance}>
-						{t("clearDistanceFilter")}
-					</Button>
-				)}
-			</div>
-		);
-	}
+	// The distance ring, not the time filter, is what emptied the list
+	const hiddenByDistance = distanceFilter !== null && unfilteredCounts[filter] > 0;
+	const nextFilter = FALL_FORWARD[filter].find((f) => counts[f] > 0);
+	const hasActions = hiddenByDistance || nextFilter !== undefined;
 
 	const getMessage = () => {
+		if (distanceFilter) {
+			const miles = RING_MILES[distanceFilter];
+			switch (filter) {
+				case "open-now":
+					return t("noLocationsOpenNowWithin", { miles });
+				case "today":
+					return t("noLocationsTodayWithin", { miles });
+				default:
+					return t("noLocationsWithin", { miles });
+			}
+		}
 		switch (filter) {
 			case "open-now":
 				return t("noLocationsOpenNow");
@@ -67,21 +82,57 @@ export function EmptyState({
 		}
 	};
 
-	const nextFilter = FALL_FORWARD[filter].find(
-		(f) => (counts?.[f] ?? 0) > 0,
-	);
-
+	// One axis: left-aligned when there's a list to scan, centered when it's just a message
 	return (
-		<div className="flex flex-col items-center justify-center py-16 text-center px-4">
-			<h3 className="font-semibold">{getMessage()}</h3>
-			{nextFilter && nextFilter !== "open-now" && onFilterChange ? (
-				<Button className="mt-4" onClick={() => onFilterChange(nextFilter)}>
-					{t(CTA_KEYS[nextFilter], { count: counts?.[nextFilter] ?? 0 })}
-				</Button>
-			) : (
+		<div
+			className={cn(
+				"container mx-auto max-w-3xl px-4",
+				hasSuggestions ? "py-6" : "py-12 text-center",
+			)}
+		>
+			<h2 className={cn("font-semibold", hasSuggestions && "px-1")}>{getMessage()}</h2>
+			{!hasActions && !hasSuggestions && (
 				<p className="mt-1 text-sm text-muted-foreground">
 					{t("tryDifferentFilter")}
 				</p>
+			)}
+
+			{hasActions && (
+				<div className={cn("mt-4 flex flex-wrap gap-2", !hasSuggestions && "justify-center")}>
+					{nextFilter && nextFilter !== "open-now" && (
+						<Button onClick={() => onFilterChange(nextFilter)}>
+							{t(CTA_KEYS[nextFilter], {
+								count: approximateCount(counts[nextFilter]),
+								// Spanish templates pluralize with {s}; English ignores it
+								s: counts[nextFilter] === 1 ? "" : "s",
+							})}
+						</Button>
+					)}
+					{hiddenByDistance && (
+						<Button variant="outline" onClick={onClearDistance}>
+							{t("clearDistanceFilter")}
+						</Button>
+					)}
+				</div>
+			)}
+
+			{hasSuggestions && (
+				<section aria-labelledby="opening-next" className="mt-6">
+					<h2 id="opening-next" className="mb-2 px-1 text-sm font-semibold text-muted-foreground">
+						{t("openingNext")}
+					</h2>
+					<div className="space-y-2">
+						{suggestions.map((location) => (
+							<LocationCard
+								key={location.id}
+								location={location}
+								now={now}
+								statusMode="full"
+								onClick={() => onSelect(location)}
+							/>
+						))}
+					</div>
+				</section>
 			)}
 		</div>
 	);

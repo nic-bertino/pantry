@@ -1,16 +1,12 @@
 "use client";
 
 import { useMemo, useState, useEffect } from "react";
-import {
-	calculateAvailability,
-	isOpenNow,
-	isOpenThisWeek,
-	isOpenToday,
-	isOpenTomorrow,
-} from "@/lib/schedule/calculator";
+import { type DistanceRing, isWithinRing } from "@/lib/geo/distance-ring";
+import { calculateAvailability, getNextSession } from "@/lib/schedule/calculator";
 import type {
 	DisplayLocation,
 	FoodLocation,
+	Session,
 	TimeFilter,
 } from "@/lib/types/location";
 import type { Region } from "./use-region";
@@ -22,10 +18,34 @@ async function loadRegionData(_region: Region): Promise<FoodLocation[]> {
 interface UseLocationsOptions {
 	filter: TimeFilter;
 	userCoordinates?: { lat: number; lng: number } | null;
+	/** Limit results (and counts) to a radius around the user */
+	distanceRing?: DistanceRing;
 	region?: Region;
-	/** Active distance radius — when set, counts only include locations within it */
-	distanceRing?: "within5" | "within10" | null;
 }
+
+/**
+ * A run of locations sharing a time context, rendered under one heading:
+ * "Open now", "Later today", "Tomorrow", or a weekday.
+ */
+export interface LocationGroup {
+	key: string;
+	kind: "open-now" | "later-today" | "day";
+	dayOffset: number;
+	/** Start of the first session in the group, for formatting the heading date */
+	date: Date;
+	timezone: string;
+	locations: DisplayLocation[];
+}
+
+/** Calendar-day window (relative to today) each filter covers */
+const FILTER_WINDOWS: Record<TimeFilter, { fromDay: number; toDay: number }> = {
+	"open-now": { fromDay: 0, toDay: 0 },
+	today: { fromDay: 0, toDay: 0 },
+	tomorrow: { fromDay: 1, toDay: 1 },
+	"this-week": { fromDay: 0, toDay: 6 },
+};
+
+const FILTERS = Object.keys(FILTER_WINDOWS) as TimeFilter[];
 
 /**
  * Calculate distance between two coordinates using Haversine formula
@@ -50,10 +70,160 @@ function calculateDistance(
 	return R * c;
 }
 
-export function useLocations({ filter, userCoordinates, region = "san-diego", distanceRing = null }: UseLocationsOptions) {
+/**
+ * The session a location contributes to a filter, or null if it's excluded.
+ * Shared by counts and filtering so chip numbers always match the list.
+ */
+function sessionForFilter(
+	location: DisplayLocation,
+	filter: TimeFilter,
+	now: Date,
+): Session | null {
+	if (filter === "open-now" && location.availability.status !== "open") {
+		return null;
+	}
+	return getNextSession(
+		location.schedule,
+		now,
+		location.timezone,
+		FILTER_WINDOWS[filter],
+	);
+}
+
+/**
+ * Order within a group: nearest first when the user has set a location,
+ * otherwise soonest first. Both fall back to the other, then name.
+ */
+function compareLocations(
+	a: DisplayLocation,
+	b: DisplayLocation,
+	now: Date,
+	hasLocation: boolean,
+): number {
+	const startOf = (loc: DisplayLocation) =>
+		loc.session
+			? Math.max(loc.session.opensAt.getTime(), now.getTime())
+			: Number.MAX_SAFE_INTEGER;
+	const byDistance = () => {
+		if (a.distance === undefined && b.distance === undefined) return 0;
+		if (a.distance === undefined) return 1;
+		if (b.distance === undefined) return -1;
+		return a.distance - b.distance;
+	};
+	const byTime = () => startOf(a) - startOf(b);
+
+	return (
+		(hasLocation ? byDistance() || byTime() : byTime() || byDistance()) ||
+		a.name.en.localeCompare(b.name.en)
+	);
+}
+
+/**
+ * Bucket locations by when their session happens, in chronological order
+ */
+export function groupLocations(
+	locations: DisplayLocation[],
+	now: Date,
+	hasLocation: boolean,
+): LocationGroup[] {
+	const groups = new Map<string, LocationGroup>();
+
+	for (const location of locations) {
+		const { session } = location;
+		if (!session) continue;
+
+		const isOpen = session.opensAt <= now;
+		const kind: LocationGroup["kind"] = isOpen
+			? "open-now"
+			: session.dayOffset === 0
+				? "later-today"
+				: "day";
+		const key = kind === "day" ? `day-${session.dayOffset}` : kind;
+
+		let group = groups.get(key);
+		if (!group) {
+			group = {
+				key,
+				kind,
+				dayOffset: session.dayOffset,
+				date: session.opensAt,
+				timezone: location.timezone,
+				locations: [],
+			};
+			groups.set(key, group);
+		}
+		group.locations.push(location);
+	}
+
+	const rank = (g: LocationGroup) => (g.kind === "open-now" ? -1 : g.dayOffset);
+	return [...groups.values()]
+		.sort((a, b) => rank(a) - rank(b))
+		.map((group) => ({
+			...group,
+			locations: group.locations.sort((a, b) =>
+				compareLocations(a, b, now, hasLocation),
+			),
+		}));
+}
+
+/** How often relative labels ("Opens in 12 min") and groupings refresh */
+const CLOCK_TICK_MS = 60_000;
+
+/**
+ * Current time, refreshed every minute and whenever the tab becomes visible
+ * again, so "Open now" and "Opens in N min" don't go stale.
+ */
+function useNow(): Date {
+	const [now, setNow] = useState(() => new Date());
+
+	useEffect(() => {
+		const tick = () => setNow(new Date());
+		const interval = setInterval(tick, CLOCK_TICK_MS);
+		const onVisibilityChange = () => {
+			if (document.visibilityState === "visible") tick();
+		};
+		document.addEventListener("visibilitychange", onVisibilityChange);
+		return () => {
+			clearInterval(interval);
+			document.removeEventListener("visibilitychange", onVisibilityChange);
+		};
+	}, []);
+
+	return now;
+}
+
+function countByFilter(infos: ScheduleInfo[]): Record<TimeFilter, number> {
+	const counts: Record<TimeFilter, number> = {
+		"open-now": 0,
+		today: 0,
+		tomorrow: 0,
+		"this-week": 0,
+	};
+	for (const { location, sessions } of infos) {
+		for (const f of FILTERS) if (sessions[f]) counts[f]++;
+		// Unknown schedules can't be ruled out, so they count toward the week
+		if (location.schedule.type === "unknown") counts["this-week"]++;
+	}
+	return counts;
+}
+
+interface ScheduleInfo {
+	location: DisplayLocation;
+	/** Session each filter would show, or null when the filter excludes it */
+	sessions: Record<TimeFilter, Session | null>;
+	/** Next session that hasn't started yet, for empty-state suggestions */
+	upcoming: Session | null;
+}
+
+export function useLocations({
+	filter,
+	userCoordinates,
+	distanceRing = null,
+	region = "san-diego",
+}: UseLocationsOptions) {
 	const [rawLocations, setRawLocations] = useState<FoodLocation[]>([]);
 	const [isLoading, setIsLoading] = useState(true);
-	const now = useMemo(() => new Date(), []);
+	const now = useNow();
 
 	// Dynamic import - only loads the requested region's data
 	useEffect(() => {
@@ -69,129 +239,109 @@ export function useLocations({ filter, userCoordinates, region = "san-diego", di
 			});
 	}, [region]);
 
-	// Single-pass processing: calculate availability, distance, and categorize by filter
-	const { displayLocations, counts } = useMemo(() => {
-		const visibleLocations = rawLocations.filter((loc) => !loc.hidden);
+	// Schedule math, independent of the user's location so moving the
+	// location doesn't redo it. Recomputes on each clock tick.
+	const scheduleInfo = useMemo(() => {
+		return rawLocations
+			.filter((loc) => !loc.hidden)
+			.map((loc): ScheduleInfo => {
+				const location: DisplayLocation = {
+					...loc,
+					availability: calculateAvailability(loc.schedule, now, loc.timezone),
+				};
+				const sessions = {} as Record<TimeFilter, Session | null>;
+				for (const f of FILTERS) sessions[f] = sessionForFilter(location, f, now);
 
-		const counts = {
-			"open-now": 0,
-			today: 0,
-			tomorrow: 0,
-			"this-week": 0,
-		};
+				const next = getNextSession(loc.schedule, now, loc.timezone, {
+					fromDay: 0,
+					toDay: 7,
+				});
+				return {
+					location,
+					sessions,
+					upcoming: next && next.opensAt > now ? next : null,
+				};
+			});
+	}, [rawLocations, now]);
 
-		const displayLocations: DisplayLocation[] = visibleLocations.map((loc) => {
-			const availability = calculateAvailability(loc.schedule, now, loc.timezone);
-
-			// Calculate distance if user coordinates available
-			let distance: number | undefined;
-			if (userCoordinates && loc.coordinates) {
-				distance = calculateDistance(
-					userCoordinates.lat,
-					userCoordinates.lng,
-					loc.coordinates.lat,
-					loc.coordinates.lng,
-				);
-			}
-
-			// Count for each filter in single pass, respecting the distance ring
-			// so chip counts always match what the list can actually show
-			const withinRing =
-				!distanceRing ||
-				(distance !== undefined &&
-					distance < (distanceRing === "within5" ? 5 : 10));
-			if (withinRing) {
-				if (isOpenNow(loc.schedule, now, loc.timezone)) counts["open-now"]++;
-				if (isOpenToday(loc.schedule, now, loc.timezone)) counts.today++;
-				if (isOpenTomorrow(loc.schedule, now, loc.timezone)) counts.tomorrow++;
-				if (isOpenThisWeek(loc.schedule, now, loc.timezone))
-					counts["this-week"]++;
-			}
-
-			return {
-				...loc,
-				availability,
-				distance,
-			};
+	// Attach distances (cheap) whenever the user's location changes
+	const located = useMemo(() => {
+		if (!userCoordinates) return scheduleInfo;
+		return scheduleInfo.map((info) => {
+			const { coordinates } = info.location;
+			if (!coordinates) return info;
+			const distance = calculateDistance(
+				userCoordinates.lat,
+				userCoordinates.lng,
+				coordinates.lat,
+				coordinates.lng,
+			);
+			return { ...info, location: { ...info.location, distance } };
 		});
+	}, [scheduleInfo, userCoordinates]);
 
-		return { displayLocations, counts };
-	}, [rawLocations, now, userCoordinates, distanceRing]);
+	// Everything below respects the distance ring, so chip counts match the list
+	const inRing = useMemo(
+		() => located.filter((info) => isWithinRing(info.location, distanceRing)),
+		[located, distanceRing],
+	);
 
-	// Filter based on time filter
-	const filteredLocations = useMemo(() => {
-		switch (filter) {
-			case "open-now":
-				return displayLocations.filter((loc) =>
-					isOpenNow(loc.schedule, now, loc.timezone),
-				);
-			case "today":
-				return displayLocations.filter((loc) =>
-					isOpenToday(loc.schedule, now, loc.timezone),
-				);
-			case "tomorrow":
-				return displayLocations.filter((loc) =>
-					isOpenTomorrow(loc.schedule, now, loc.timezone),
-				);
-			case "this-week":
-				return displayLocations.filter((loc) =>
-					isOpenThisWeek(loc.schedule, now, loc.timezone),
-				);
-			default:
-				return displayLocations;
+	const counts = useMemo(() => countByFilter(inRing), [inRing]);
+
+	// Same counts ignoring the ring, so the empty state can tell when the
+	// distance filter (not the time filter) is what emptied the list
+	const unfilteredCounts = useMemo(() => countByFilter(located), [located]);
+
+	const { groups, unknown } = useMemo(() => {
+		const scheduled: DisplayLocation[] = [];
+		const unknown: DisplayLocation[] = [];
+
+		for (const { location, sessions } of inRing) {
+			if (location.schedule.type === "unknown") {
+				if (filter === "this-week") unknown.push({ ...location, session: null });
+				continue;
+			}
+			const session = sessions[filter];
+			if (session) scheduled.push({ ...location, session });
 		}
-	}, [displayLocations, filter, now]);
 
-	// Sort locations: distance-first when user has set location, opening-time-first otherwise
-	const sortedLocations = useMemo(() => {
-		const hasLocation = userCoordinates != null;
+		unknown.sort((a, b) => a.name.en.localeCompare(b.name.en));
 
-		// Get opening time for sorting (0 = open now, otherwise minutes until open)
-		const getOpeningTime = (loc: DisplayLocation): number => {
-			if (loc.availability.status === "open") return 0;
-			if (loc.availability.status === "opening-soon") {
-				return loc.availability.minutesUntil;
-			}
-			if (loc.availability.status === "closed" && loc.availability.opensAt) {
-				return Math.floor(
-					(loc.availability.opensAt.getTime() - now.getTime()) / (1000 * 60),
-				);
-			}
-			return Number.MAX_SAFE_INTEGER; // Unknown status goes to end
+		return {
+			groups: groupLocations(scheduled, now, userCoordinates != null),
+			unknown,
 		};
+	}, [inRing, filter, now, userCoordinates]);
 
-		return [...filteredLocations].sort((a, b) => {
-			if (hasLocation) {
-				// Locations without coordinates go to the end
-				if (a.distance === undefined && b.distance !== undefined) return 1;
-				if (a.distance !== undefined && b.distance === undefined) return -1;
+	// Upcoming sessions in start order, offered when the active filter has no results
+	const nextUp = useMemo(
+		() =>
+			inRing
+				.flatMap(({ location, upcoming }) =>
+					upcoming ? [{ ...location, session: upcoming }] : [],
+				)
+				.sort((a, b) => compareLocations(a, b, now, false)),
+		[inRing, now],
+	);
 
-				// Distance-first with 0.1mi dead zone
-				if (a.distance !== undefined && b.distance !== undefined) {
-					const distDiff = a.distance - b.distance;
-					if (Math.abs(distDiff) > 0.1) return distDiff;
-				}
-			}
+	const locations = useMemo(
+		() => [...groups.flatMap((g) => g.locations), ...unknown],
+		[groups, unknown],
+	);
 
-			// Opening time
-			const aTime = getOpeningTime(a);
-			const bTime = getOpeningTime(b);
-			if (aTime !== bTime) return aTime - bTime;
-
-			// Distance tiebreaker
-			if (a.distance !== undefined && b.distance !== undefined) {
-				return a.distance - b.distance;
-			}
-
-			return a.name.en.localeCompare(b.name.en);
-		});
-	}, [filteredLocations, now, userCoordinates]);
+	// All visible locations with distances, ignoring the ring
+	const allLocations = useMemo(() => located.map((info) => info.location), [located]);
 
 	return {
-		locations: sortedLocations,
-		allLocations: displayLocations,
+		locations,
+		groups,
+		unknown,
+		nextUp,
+		allLocations,
 		counts,
-		total: displayLocations.length,
+		unfilteredCounts,
+		total: allLocations.length,
+		now,
 		isLoading,
 	};
 }

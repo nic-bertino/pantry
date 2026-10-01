@@ -5,6 +5,7 @@ import {
 	CheckIcon,
 	ChevronDownIcon,
 	LoaderCircleIcon,
+	LocateOffIcon,
 	MapPinIcon,
 	NavigationIcon,
 	XIcon,
@@ -152,42 +153,23 @@ export function LocationInput({
 		<PopoverPrimitive.Root open={open} onOpenChange={handleOpenChange}>
 			<PopoverPrimitive.Trigger
 				aria-label={isLoading ? t("locatingYou") : undefined}
-				className={cn(
-					"inline-flex items-center gap-1.5 whitespace-nowrap rounded-full text-sm px-3 py-1.5 transition-colors",
-					hasLocation
-						? "border border-border text-foreground hover:bg-muted/50"
-						: "bg-primary text-primary-foreground hover:bg-primary/90",
-				)}
+				// Outline, not filled: in the filter rows a filled pill means "selected"
+				className="inline-flex h-10 shrink-0 items-center gap-1.5 whitespace-nowrap rounded-full border border-border bg-card px-3.5 text-sm font-medium text-foreground transition-colors hover:bg-muted/50 active:bg-muted"
 			>
 				{isLoading ? (
 					<LoaderCircleIcon
 						aria-hidden="true"
-						className={cn(
-							"h-3.5 w-3.5 shrink-0 animate-spin motion-reduce:animate-none",
-							hasLocation && "text-muted-foreground",
-						)}
+						className="h-4 w-4 shrink-0 animate-spin text-brand-green motion-reduce:animate-none"
 					/>
 				) : (
-					<MapPinIcon
-						aria-hidden="true"
-						className={cn(
-							"h-3.5 w-3.5 shrink-0",
-							hasLocation && "text-muted-foreground",
-						)}
-					/>
+					<MapPinIcon aria-hidden="true" className="h-4 w-4 shrink-0 text-brand-green" />
 				)}
 				{getTriggerLabel()}
-				<ChevronDownIcon
-					aria-hidden="true"
-					className={cn(
-						"h-3 w-3",
-						hasLocation ? "text-muted-foreground" : "opacity-70",
-					)}
-				/>
+				<ChevronDownIcon aria-hidden="true" className="h-3 w-3 text-muted-foreground" />
 			</PopoverPrimitive.Trigger>
 
 			<PopoverPrimitive.Portal>
-				<PopoverPrimitive.Positioner align="start" sideOffset={8}>
+				<PopoverPrimitive.Positioner align="start" sideOffset={8} className="z-50">
 					<PopoverPrimitive.Popup
 						className={cn(
 							"z-50 w-72 rounded-2xl bg-popover p-4 shadow-2xl ring-1 ring-foreground/5",
@@ -273,10 +255,25 @@ export function LocationInput({
 									</button>
 								)}
 
-								{/* Divider */}
-								{showBrowserOption && (
-									<div className="h-px bg-border/50 my-3" aria-hidden="true" />
+								{/* Explain why "Use my location" is missing */}
+								{!showBrowserOption && (
+									<div className="mb-3 flex items-start gap-3">
+										<div className="mt-0.5 p-1.5 rounded-full bg-muted" aria-hidden="true">
+											<LocateOffIcon className="h-4 w-4 text-muted-foreground" />
+										</div>
+										<div>
+											<div className="font-medium text-sm">
+												{t("locationBlocked")}
+											</div>
+											<div className="text-xs text-muted-foreground">
+												{t("locationBlockedDesc")}
+											</div>
+										</div>
+									</div>
 								)}
+
+								{/* Divider */}
+								<div className="h-px bg-border/50 my-3" aria-hidden="true" />
 
 								{/* ZIP code input */}
 								<div className="space-y-2">

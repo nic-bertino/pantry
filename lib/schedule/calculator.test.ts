@@ -2,6 +2,7 @@ import { afterEach, describe, expect, it, vi } from "vitest";
 import type { SchedulePattern, SpecialPattern, WeeklySchedule } from "@/lib/types/location";
 import {
 	calculateAvailability,
+	getNextSession,
 	getNthWeekdayOfMonth,
 	isOpenInRange,
 	isOpenNow,
@@ -189,6 +190,16 @@ describe("calculateAvailability", () => {
 			}
 		});
 
+		it("resolves a once-a-week location to next week after today's session", () => {
+			// Wednesday 3 PM PT, schedule open Wed 9-12 only
+			const now = pacificDate(2024, 0, 3, 15);
+			const result = calculateAvailability(weeklyOn("wednesday", 9, 12), now, TZ);
+			expect(result.status).toBe("closed");
+			if (result.status === "closed") {
+				expect(result.opensAt).toEqual(pacificDate(2024, 0, 10, 9));
+			}
+		});
+
 		it("is closed at exact close time (range is exclusive of close)", () => {
 			// Wednesday 12:00 PM PT exactly, schedule open Wed 9-12
 			const now = pacificDate(2024, 0, 3, 12, 0);
@@ -354,6 +365,12 @@ describe("isOpenThisWeek", () => {
 		expect(isOpenThisWeek(specialSchedule(3, [1], 11, 13), now, TZ)).toBe(false);
 	});
 
+	it("returns false when the only session left is a week out", () => {
+		// Wednesday 3 PM, Wed-only schedule: next session is next Wednesday
+		const now = pacificDate(2024, 0, 3, 15);
+		expect(isOpenThisWeek(weeklyOn("wednesday", 9, 12), now, TZ)).toBe(false);
+	});
+
 	it("returns true when today's hours passed but another day this week has hours", () => {
 		// Wednesday 3 PM, schedule open Wed 9-12 AND Friday 9-12
 		const schedule: SchedulePattern = {
@@ -426,5 +443,64 @@ describe("isOpenInRange", () => {
 		expect(isOpenInRange(weeklyOn("wednesday", 9, 12), start, end, TZ)).toBe(
 			false,
 		);
+	});
+});
+
+// -------------------------------------------------------------------
+// getNextSession
+// -------------------------------------------------------------------
+describe("getNextSession", () => {
+	it("returns the current session while open", () => {
+		const now = pacificDate(2024, 0, 3, 10); // Wed 10 AM
+		const session = getNextSession(weeklyOn("wednesday", 9, 12), now, TZ);
+		expect(session).toEqual({
+			opensAt: pacificDate(2024, 0, 3, 9),
+			closesAt: pacificDate(2024, 0, 3, 12),
+			dayOffset: 0,
+		});
+	});
+
+	it("skips today's session once it has ended", () => {
+		const now = pacificDate(2024, 0, 3, 13); // Wed 1 PM
+		const schedule: SchedulePattern = {
+			type: "weekly",
+			schedule: {
+				...(weeklyOn("wednesday", 9, 12) as { schedule: WeeklySchedule })
+					.schedule,
+				friday: { open: { hour: 8, minute: 30 }, close: { hour: 10, minute: 0 } },
+			},
+		};
+		const session = getNextSession(schedule, now, TZ);
+		expect(session?.dayOffset).toBe(2);
+		expect(session?.opensAt).toEqual(pacificDate(2024, 0, 5, 8, 30));
+	});
+
+	it("respects the fromDay/toDay window", () => {
+		const now = pacificDate(2024, 0, 3, 10); // Wed, open now
+		const schedule = weeklyOn("wednesday", 9, 12);
+		expect(getNextSession(schedule, now, TZ, { fromDay: 1, toDay: 6 })).toBeNull();
+		expect(
+			getNextSession(schedule, now, TZ, { fromDay: 1, toDay: 7 })?.dayOffset,
+		).toBe(7);
+	});
+
+	it("finds special-pattern sessions", () => {
+		// Mon Jan 1 2024; 1st Wednesday is Jan 3
+		const now = pacificDate(2024, 0, 1, 10);
+		const session = getNextSession(specialSchedule(3, [1], 11, 13), now, TZ);
+		expect(session?.dayOffset).toBe(2);
+		expect(session?.opensAt).toEqual(pacificDate(2024, 0, 3, 11));
+	});
+
+	it("returns null for unknown schedules", () => {
+		expect(getNextSession(unknownSchedule, new Date(), TZ)).toBeNull();
+	});
+
+	it("handles the DST spring-forward week", () => {
+		// Sat Mar 9 2024 10 AM PST; DST starts Sun Mar 10
+		const now = pacificDate(2024, 2, 9, 10);
+		const session = getNextSession(weeklyOn("monday", 9, 12), now, TZ);
+		expect(session?.dayOffset).toBe(2);
+		expect(session?.opensAt).toEqual(pacificDate(2024, 2, 11, 9));
 	});
 });
