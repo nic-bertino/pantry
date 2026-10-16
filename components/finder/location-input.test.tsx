@@ -9,6 +9,7 @@ import {
 	type Mock,
 } from "vitest";
 import type { ComponentProps } from "react";
+import { trackClarityEvent } from "@/lib/analytics/clarity";
 import { LocationInput } from "./location-input";
 
 // Mock translations — return key as-is for easy assertions
@@ -30,10 +31,15 @@ vi.mock("@/lib/i18n/use-translations", () => ({
 // Mock zip lookup
 vi.mock("@/lib/geo/zip-lookup", () => ({
 	isValidZipFormat: (zip: string) => /^\d{5}$/.test(zip),
+	hasCountyZipPrefix: (zip: string) => /^(919|920|921)/.test(zip),
 	getCoordinatesForZip: (zip: string) => {
 		if (zip === "92101") return { lat: 32.72, lng: -117.16 };
 		return null;
 	},
+}));
+
+vi.mock("@/lib/analytics/clarity", () => ({
+	trackClarityEvent: vi.fn(),
 }));
 
 const defaultProps: ComponentProps<typeof LocationInput> = {
@@ -65,6 +71,7 @@ describe("LocationInput", () => {
 
 	afterEach(() => {
 		vi.useRealTimers();
+		vi.mocked(trackClarityEvent).mockClear();
 		cleanup();
 	});
 
@@ -331,6 +338,38 @@ describe("LocationInput", () => {
 			fireEvent.click(screen.getByText("update"));
 
 			expect(screen.getByText("invalidZip")).toBeTruthy();
+			expect(trackClarityEvent).not.toHaveBeenCalled();
+		});
+
+		it("shows not-found error and tracks the ZIP for an unknown county ZIP", () => {
+			const { props } = renderInput();
+
+			fireEvent.click(screen.getByText("setLocation"));
+
+			const input = screen.getByPlaceholderText("92101");
+			fireEvent.change(input, { target: { value: "92100" } });
+			fireEvent.click(screen.getByText("update"));
+
+			expect(screen.getByText("zipNotFound")).toBeTruthy();
+			expect(props.onSetZipLocation).not.toHaveBeenCalled();
+			expect(trackClarityEvent).toHaveBeenCalledWith("zip_not_found", {
+				zip_not_found: "92100",
+			});
+		});
+
+		it("tracks ZIPs from outside the county without the exact ZIP", () => {
+			renderInput();
+
+			fireEvent.click(screen.getByText("setLocation"));
+
+			const input = screen.getByPlaceholderText("92101");
+			fireEvent.change(input, { target: { value: "90210" } });
+			fireEvent.click(screen.getByText("update"));
+
+			expect(screen.getByText("zipNotFound")).toBeTruthy();
+			expect(trackClarityEvent).toHaveBeenCalledWith("zip_not_found", {
+				zip_not_found: "outside_area",
+			});
 		});
 	});
 

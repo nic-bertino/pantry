@@ -1,6 +1,7 @@
 "use client";
 
 import { useCallback, useEffect, useState } from "react";
+import { getCoordinatesForZip } from "@/lib/geo/zip-lookup";
 
 // Dev: set to true to use test coordinates (downtown San Diego)
 const USE_TEST_COORDS = false;
@@ -148,11 +149,13 @@ export function useGeolocation() {
 	useEffect(() => {
 		const saved = loadSavedZipLocation();
 		if (!saved) return;
+		// Look the ZIP up again so corrected centroids reach returning visitors
+		const coordinates = getCoordinatesForZip(saved.zip) ?? saved.coordinates;
 		setState((prev) => {
 			if (prev.coordinates) return prev;
 			return {
 				...prev,
-				coordinates: saved.coordinates,
+				coordinates,
 				source: "zip",
 				zipCode: saved.zip,
 			};

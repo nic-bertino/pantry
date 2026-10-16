@@ -13,8 +13,13 @@ import {
 import { Popover as PopoverPrimitive } from "@base-ui/react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
+import { trackClarityEvent } from "@/lib/analytics/clarity";
 import { useTranslations } from "@/lib/i18n/use-translations";
-import { getCoordinatesForZip, isValidZipFormat } from "@/lib/geo/zip-lookup";
+import {
+	getCoordinatesForZip,
+	hasCountyZipPrefix,
+	isValidZipFormat,
+} from "@/lib/geo/zip-lookup";
 import { cn } from "@/lib/utils";
 
 interface Coordinates {
@@ -124,7 +129,12 @@ export function LocationInput({
 
 		const coords = getCoordinatesForZip(cleaned);
 		if (!coords) {
-			setZipError(t("invalidZip"));
+			setZipError(t("zipNotFound"));
+			// Only county-prefix ZIPs can be gaps in our data; don't record
+			// exact ZIPs from elsewhere
+			trackClarityEvent("zip_not_found", {
+				zip_not_found: hasCountyZipPrefix(cleaned) ? cleaned : "outside_area",
+			});
 			return;
 		}
 

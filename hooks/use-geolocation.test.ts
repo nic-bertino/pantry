@@ -1,5 +1,6 @@
 import { act, renderHook } from "@testing-library/react";
-import { beforeEach, describe, expect, it, vi } from "vitest";
+import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
+import { getCoordinatesForZip } from "@/lib/geo/zip-lookup";
 import { useGeolocation } from "./use-geolocation";
 
 describe("useGeolocation", () => {
@@ -157,6 +158,39 @@ describe("useGeolocation", () => {
 		});
 		expect(result.current.source).toBe("zip");
 		expect(result.current.zipCode).toBe("92101");
+	});
+
+	describe("saved ZIP location", () => {
+		afterEach(() => {
+			window.localStorage.clear();
+		});
+
+		it("restores a saved ZIP with current coordinates, not stale ones", () => {
+			// Saved under the old table, which put Vista in San Marcos
+			window.localStorage.setItem(
+				"pantry-zip-location",
+				JSON.stringify({ zip: "92083", lat: 33.1386, lng: -117.166 }),
+			);
+
+			const { result } = renderHook(() => useGeolocation());
+
+			expect(result.current.zipCode).toBe("92083");
+			expect(result.current.source).toBe("zip");
+			expect(result.current.coordinates).toEqual(
+				getCoordinatesForZip("92083"),
+			);
+		});
+
+		it("keeps saved coordinates when the ZIP is no longer in the table", () => {
+			window.localStorage.setItem(
+				"pantry-zip-location",
+				JSON.stringify({ zip: "00000", lat: 32.7, lng: -117.1 }),
+			);
+
+			const { result } = renderHook(() => useGeolocation());
+
+			expect(result.current.coordinates).toEqual({ lat: 32.7, lng: -117.1 });
+		});
 	});
 
 	it("clears location", async () => {
