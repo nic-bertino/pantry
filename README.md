@@ -69,3 +69,5 @@ Pantry differs from maps or "store locator" displays: these can be overwhelming 
 ## License
 
 MIT
+
+ZIP code coordinates in `lib/data/zip-centroids.json` come from [GeoNames](https://www.geonames.org/) under [CC BY 4.0](https://creativecommons.org/licenses/by/4.0/), with corrections from US Census Bureau ZCTA data. Regenerate them with `bun run scripts/build-zip-centroids.ts`.
